@@ -11,13 +11,11 @@ import { TopNav } from "../_components/topnav";
 
 import { Session } from "next-auth";
 
-
-
 function CameraComponent({
-  session,
+  userData,
   onImageUpload,
 }: {
-  session: Session | null;
+  userData: any;
   onImageUpload: () => void;
 }) {
   const isMobile = window.innerWidth < 768;
@@ -51,7 +49,7 @@ function CameraComponent({
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <div>
-        Welcome, {session?.user?.firstname} {session?.user?.lastname}
+        Welcome, {userData.user.firstname} {userData.user.lastname}
       </div>
       {!url && (
         <>
@@ -97,7 +95,7 @@ function CameraComponent({
             <form
               action={async (formData) => {
                 await updateImage(
-                  session?.user.id,
+                  userData.user.id,
                   formData.get("image") as string
                 );
                 onImageUpload();
@@ -121,6 +119,7 @@ export default function Dashboard() {
   const [imageStatus, setImageStatus] = useState<boolean>(false);
   const router = useRouter();
   const [userData, setUserData] = useState<any | null>(null);
+
   useEffect(() => {
     const getImageStatus = async () => {
       if (session?.user?.id) {
@@ -132,7 +131,7 @@ export default function Dashboard() {
       }
     };
     getImageStatus();
-  }, [imageStatus, session, session?.user ]);
+  }, [imageStatus, session, session?.user]);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -144,14 +143,13 @@ export default function Dashboard() {
           setUserData(user);
         }
       }
-    }
+    };
     getUserData();
-  })
+  }, [session]);
 
   const handleImageUpload = () => {
     setImageStatus(true);
-    
-  } 
+  };
 
   if (status === "loading") {
     return (
@@ -168,8 +166,12 @@ export default function Dashboard() {
     <div>
       <TopNav />
       <div className="min-w-screen flex flex-col gap-4 justify-center items-center h-full mt-10">
-        {userData}
-        {/* <CameraComponent session={session} onImageUpload={handleImageUpload} /> */}
+        {userData && (
+          <CameraComponent
+            userData={JSON.parse(userData)}
+            onImageUpload={handleImageUpload}
+          />
+        )}
       </div>
     </div>
   );

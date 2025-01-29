@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { checkImage, fetchData, fetchImage } from "@/server/actions";
+import { TopNav } from "@/app/_components/topnav";
 
 function convertToESTFormat(dateString: string): string {
   const date = new Date(dateString);
@@ -23,7 +24,7 @@ function convertToESTFormat(dateString: string): string {
 
 interface CardProps {
   idCardContainerRef: React.RefObject<HTMLDivElement>;
-  userData: string | null;
+  userData: any | null;
 }
 
 const CardComponent: React.FC<CardProps> = ({
@@ -32,6 +33,13 @@ const CardComponent: React.FC<CardProps> = ({
 }) => {
   return (
     <div ref={idCardContainerRef}>
+      <IDCard
+        id={userData?.user.id}
+        date={convertToESTFormat(userData?.user.last_signed_in)}
+        photo={userData?.user.image}
+        name={`${userData?.user.firstname} ${userData?.user.lastname}`}
+        phone={userData?.user.phonenumber}
+      />
 
     </div>
   );
@@ -64,7 +72,8 @@ export default function Print() {
 
       }
     }
-  })
+    getUserData();
+  }, [session])
 
   useEffect(() => {
     const getImageStatus = async () => {
@@ -82,6 +91,7 @@ export default function Print() {
 
   return (
     <div>
+      <TopNav />
       <div className="min-w-screen flex flex-col gap-4 justify-center items-center h-full mt-10">
         <div className="sm:inline hidden">
           <ReactToPrint
@@ -89,10 +99,12 @@ export default function Print() {
             content={() => idCardContainerRef.current}
           />
         </div>
-        <CardComponent
-          idCardContainerRef={idCardContainerRef}
-          userData={userData}
-        />
+        {userData && (
+          <CardComponent
+            idCardContainerRef={idCardContainerRef}
+            userData={JSON.parse(userData)}
+          />
+        )}
       </div>
     </div>
   );
