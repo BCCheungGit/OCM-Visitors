@@ -75,8 +75,37 @@ export async function updateImage(uuid: string | undefined, image: string) {
     return JSON.stringify({success: 'Image updated'});
 }
 
+export async function fetchImage(uuid: string) {
+    const prisma = new PrismaClient();
+    const user = await prisma.visitors_master.findFirst({
+        where: {
+            id: uuid
+        }
+    })
+    await prisma.$disconnect();
+    if (!user) {
+        return {error: 'User not found'};
+    }
+    return JSON.stringify({image: user.image});
+}
 
 
+export async function fetchData(uuid: string) {
+    if (!uuid) {
+        return { error: "Uuid Not Provided"}
+    }
+
+    const prisma = new PrismaClient();
+    const user = await prisma.visitors_master.findFirst({
+        where: {
+            id: uuid
+        }
+    })
+    if (!user) {
+        return {error: "User Not Found"};
+    }
+    return JSON.stringify({user});
+}
 
 
 export async function signUp(phone: string, code: string, formInfo: any) {

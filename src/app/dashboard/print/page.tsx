@@ -7,7 +7,7 @@ import ReactToPrint from "react-to-print";
 import { Button } from "@/components/ui/button";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { checkImage } from "@/server/actions";
+import { checkImage, fetchData, fetchImage } from "@/server/actions";
 
 function convertToESTFormat(dateString: string): string {
   const date = new Date(dateString);
@@ -22,96 +22,63 @@ function convertToESTFormat(dateString: string): string {
 }
 
 interface CardProps {
-  session: Session | null;
   idCardContainerRef: React.RefObject<HTMLDivElement>;
-  photo: string | undefined;
+  userData: string | null;
 }
 
 const CardComponent: React.FC<CardProps> = ({
-  session,
   idCardContainerRef,
-  photo,
+  userData,
 }) => {
   return (
     <div ref={idCardContainerRef}>
-      <IDCard
-        id={session?.user.id}
-        name={`${session?.user.firstname} ${session?.user.lastname}`}
-        phone={session?.user.phone}
-        photo={photo}
-        date={
-          session?.user.created_at
-            ? convertToESTFormat(session.user.created_at)
-            : ""
-        }
-      />
+
     </div>
   );
 };
 
-// export default function PrintPage() {
-//     const router = useRouter();
 
-//     const idCardContainerRef = useRef<HTMLDivElement>(null);
-
-//     const [currentUser, setCurrentUser] = useState<User | null>(null);
-//     const [profileImage, setProfileImage] = useState<string | null>(null);
-
-//     const checkImage = useCallback(async () => {
-//         const { data, error } = await supabaseClient.from('profiles').select('image').eq('id', currentUser?.id).single();
-//         if (error) {
-//           console.error('Error fetching image', error);
-//         }
-//         if (data?.image !== null) {
-//           setProfileImage(data?.image);
-//         }
-//       }, [currentUser, supabaseClient]);
-
-//       useEffect(() => {
-//         if (currentUser) {
-//           checkImage();
-//         }
-//       }, [currentUser, checkImage]);
-
-//     if (!currentUser) {
-//         return <div>Loading...</div>
-//     }
-//     return (
-//         <>
-//         <TopNav />
-//         <div className="min-w-screen flex flex-col gap-4 justify-center items-center h-full mt-10">
-//                 <div className="sm:inline hidden">
-//                   <ReactToPrint
-//                     trigger={() => <Button>Print ID Card</Button>}
-//                     content={() => idCardContainerRef.current}
-//                   />
-
-//                 </div>
-//                 <CardComponent user={currentUser} idCardContainerRef={idCardContainerRef} photo={profileImage || ''} />
-//         </div>
-//         </>
-//     )
-// }
 
 export default function Print() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession({
+    required: true,
+    onUnauthenticated() {
+      return { redirect: "/sign-in" };
+    },
+  });
 
   const idCardContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const [image, setImage] = useState<string | null>(null);
+  const [userData, setUserData] = useState<any | null>(null);
+
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/sign-in");
+    const getUserData = async () => {
+      if (session) {
+        const user = await fetchData(session.user.id);
+        if (typeof user === "object" && user.error) {
+          router.push("/");
+        } else {
+          setUserData(user);
+        } 
+
+      }
     }
+  })
+
+  useEffect(() => {
     const getImageStatus = async () => {
+        console.log(session?.user)
       if (session?.user.id) {
-        const image = await checkImage(session?.user.id);
-        if (!image) {
+        const res = await fetchImage(session.user.id);
+        if (typeof res === "object" && res.error) {
           router.push("/dashboard");
-        }
+        } 
+        
       }
     };
     getImageStatus();
-  }, [session, session?.user, session?.user.image]);
+  }, [session, session?.user ]);
 
   return (
     <div>
@@ -123,9 +90,8 @@ export default function Print() {
           />
         </div>
         <CardComponent
-          session={session}
           idCardContainerRef={idCardContainerRef}
-          photo={session?.user.image || ""}
+          userData={userData}
         />
       </div>
     </div>
