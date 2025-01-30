@@ -2,12 +2,27 @@
 
 import Image from "next/image";
 import {signIn, signOut, useSession} from "next-auth/react";
-
+import { useEffect, useState } from "react";
+import { fetchData } from "@/server/actions";
+import { UserNav } from "./UserNav";
 
 export function TopNav() {
 
   const {data: session, status} = useSession();
-  
+  const [userData, setUserData] = useState<any | null>(null);
+  useEffect(() => {
+    const getUserData = async () => {
+      if (session) {
+        const user = await fetchData(session.user.id);
+        if (typeof user === "object" && user.error) {
+          setUserData(null); 
+        } else {
+          setUserData(user);
+        }
+      }
+    }
+    getUserData();
+  }, [session]) 
   return (
       <nav className="flex items-center justify-between w-full p-4 sm:text-xl text-base font-semibold border-b">
         <div className="flex items-center w-1/4">
@@ -34,7 +49,7 @@ export function TopNav() {
           </h2>
         </div>
         <div className="flex justify-end gap-4 items-center w-1/4">
-           
+          {userData && (<UserNav firstname={JSON.parse(userData).user.firstname} photo={JSON.parse(userData).user.image} />) }
         </div>
       </nav>
   );

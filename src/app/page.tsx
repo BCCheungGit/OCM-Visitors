@@ -8,11 +8,17 @@ import { useRouter } from "next/navigation";
 
 import { useEffect } from "react";
 import { TopNav } from "./_components/topnav";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
-
+      const { data: session, status } = useSession();
       const router = useRouter();
 
+      useEffect(() => {
+        if (session) {
+          router.push("/dashboard");
+        }
+      }, [session, router]);
       return (
         <>
         <TopNav />
@@ -23,7 +29,10 @@ export default function Home() {
         <h1 className="font-semibold">Welcome to OCM!</h1>
 
         </div>
-        <Link className="w-full" href="/sign-up"><Button className="w-full">Sign Up as Visitor</Button></Link>
+        <div className="flex flex-col gap-4 items-center justify-center w-full">
+        <Link className="w-full" href="/sign-up"><Button className="w-full">Create Account</Button></Link>
+        <Link className="w-full" href="/sign-in"><Button className="w-full">Sign In</Button></Link>
+       </div> 
         </div>
       </div>
     </>

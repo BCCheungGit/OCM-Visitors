@@ -32,6 +32,48 @@ export async function createVerification(phone: string) {
 }
 
 
+export async function signUp(phone: string, code: string, formInfo: any) {
+    if (!phone || !code) {
+        return { error: 'Phone number and code are required' }
+    }
+    const verificationCheck = await client.verify.v2
+        .services(service)
+        .verificationChecks.create({
+            to: phone,
+            code: code,
+        });
+
+    if (verificationCheck.status == 'approved') {
+        const prisma = new PrismaClient();
+        const newid = uuidv4();
+        const user = await prisma.visitors_master.findFirst({
+            where: {
+                phonenumber: phone,
+            },
+        })
+        if (user) {
+            return { error: 'User already exists' }
+        }
+        const res = await prisma.visitors_master.create({
+            data: {
+                id: newid,
+                firstname: formInfo.firstname as string,
+                lastname: formInfo.lastname as string,
+                phonenumber: formInfo.phone as string,
+                created_at: new Date().toISOString(),
+                last_signed_in: new Date().toISOString(),
+                events: "",
+                active: true,
+                role: "visitor"
+            }
+        })
+        await prisma.$disconnect();
+        return JSON.stringify({ res });
+    } else {
+        return { error: 'Invalid OTP' }
+    }
+
+}
 export async function checkImage(uuid: string) {
     const prisma = new PrismaClient();
     const user = await prisma.visitors_master.findFirst({
@@ -75,6 +117,8 @@ export async function updateImage(uuid: string | undefined, image: string) {
     return JSON.stringify({success: 'Image updated'});
 }
 
+
+
 export async function fetchImage(uuid: string) {
     const prisma = new PrismaClient();
     const user = await prisma.visitors_master.findFirst({
@@ -108,48 +152,6 @@ export async function fetchData(uuid: string) {
 }
 
 
-export async function signUp(phone: string, code: string, formInfo: any) {
-    if (!phone || !code) {
-        return { error: 'Phone number and code are required' }
-    }
-    const verificationCheck = await client.verify.v2
-        .services(service)
-        .verificationChecks.create({
-            to: phone,
-            code: code,
-        });
-
-    if (verificationCheck.status == 'approved') {
-        const prisma = new PrismaClient();
-        const newid = uuidv4();
-        const user = await prisma.visitors_master.findFirst({
-            where: {
-                phonenumber: phone,
-            },
-        })
-        if (user) {
-            return { error: 'User already exists' }
-        }
-        const res = await prisma.visitors_master.create({
-            data: {
-                id: newid,
-                firstname: formInfo.firstname as string,
-                lastname: formInfo.lastname as string,
-                phonenumber: formInfo.phone as string,
-                created_at: new Date().toISOString(),
-                last_signed_in: new Date().toISOString(),
-                events: "",
-                active: true,
-                role: "visitor"
-            }
-        })
-        await prisma.$disconnect();
-        return JSON.stringify({ res });
-    } else {
-        return { error: 'Invalid OTP' }
-    }
-
-}
 
 
 

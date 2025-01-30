@@ -30,4 +30,5 @@ OCM Visitors is a simple web application that allows you to track visitors to OC
 - [x] Create Next.js frontend  
 - [x] Create Twilio Integration
 - [x] Complete sign up process 
-- [ ] Create Visitor CRUD 
+- [ ] Create Visitor CRUD (admin dashboard)
+- [ ] Implement language toggling with react-i18next (en, 中文) 
