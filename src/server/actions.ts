@@ -145,10 +145,39 @@ export async function fetchData(uuid: string) {
             id: uuid
         }
     })
+    await prisma.$disconnect();
     if (!user) {
         return {error: "User Not Found"};
     }
     return JSON.stringify({user});
+}
+
+
+export async function isAdmin(uuid: string) {
+    if (!uuid) {
+        return false
+    }
+    const prisma = new PrismaClient();
+    const user = await prisma.visitors_master.findFirst({
+        where: {
+            id: uuid
+        }
+    })
+    await prisma.$disconnect();
+    if (!user) {
+        return false
+    }
+    if (user.role === 'admin') {
+        return true;
+    }
+    return false;
+}
+
+export async function fetchAllVisitors() {
+    const prisma = new PrismaClient();
+    const users = await prisma.visitors_master.findMany();
+    await prisma.$disconnect();
+    return JSON.stringify(users);
 }
 
 
