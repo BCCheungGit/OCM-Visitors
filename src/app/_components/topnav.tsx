@@ -29,9 +29,9 @@ export function TopNav() {
           <Image
             src="https://avatars.planningcenteronline.com/uploads/organization/217202-1482195203/avatar.1.png"
             alt="Main Church"
-            className="sm:w-[120px] sm:h-[120px]"
-            width={80}
-            height={80}
+            className="sm:w-[80px] sm:h-[80px]"
+            width={60}
+            height={60}
           />
         </div>
         <div className="flex flex-col items-center justify-center w-2/4">
@@ -49,7 +49,7 @@ export function TopNav() {
           </h2>
         </div>
         <div className="flex justify-end gap-4 items-center w-1/4">
-          {userData && (<UserNav firstname={JSON.parse(userData).user.firstname} photo={JSON.parse(userData).user.image} />) }
+          {userData && (<UserNav firstname={JSON.parse(userData).user.firstname} photo={JSON.parse(userData).user.image} role={JSON.parse(userData).user.role} />) }
         </div>
       </nav>
   );

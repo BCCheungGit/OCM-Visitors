@@ -15,7 +15,8 @@ import { signIn, signOut, useSession } from "next-auth/react";
 
 interface UserNavProps {
     firstname: string;
-    photo: string
+    photo: string,
+    role: string,
 }
 
 
@@ -38,7 +39,7 @@ export function UserNav(user: UserNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-            <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/admin">Admin Dashboard</Link></DropdownMenuItem>
+            {user.role == "admin" && <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/admin">Admin Dashboard</Link></DropdownMenuItem>}
           {/* <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/my-organizations">My Orgs</Link></DropdownMenuItem>
           <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/dashboard">My Tasks</Link></DropdownMenuItem>
           <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/create-task">Create Task</Link></DropdownMenuItem> */}

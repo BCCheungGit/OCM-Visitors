@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { IDCard } from "./_components/idcard";
+import { IDCard } from "./idcard";
 import ReactToPrint from "react-to-print";
 import { Button } from "@/components/ui/button";
 import { Session } from "next-auth";
