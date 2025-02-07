@@ -40,12 +40,13 @@ export function UserNav(user: UserNavProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
             {user.role == "admin" && <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/admin">Admin Dashboard</Link></DropdownMenuItem>}
+            <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/dashboard/print">My QR Code</Link></DropdownMenuItem> 
           {/* <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/my-organizations">My Orgs</Link></DropdownMenuItem>
           <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/dashboard">My Tasks</Link></DropdownMenuItem>
           <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/create-task">Create Task</Link></DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => signOut()}>Log out</DropdownMenuItem>
+        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => signOut({callbackUrl:"/", redirect:true})}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
