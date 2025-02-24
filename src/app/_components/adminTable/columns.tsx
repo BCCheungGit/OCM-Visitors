@@ -19,6 +19,118 @@ type Columns = {
 
 import { Row } from "@tanstack/react-table";
 
+
+
+export const Columnszh: ColumnDef<Columns, keyof Columns>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected}
+        aria-label="Select all"
+        className="translate-y-[2px]"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-[2px]"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="使用者ID" />
+    ),   
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "lastname",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="性" />
+    ),   
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "firstname",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="名" />
+    ),
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "phonenumber",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="電話號碼" />
+    ),
+    enableSorting: false, 
+    enableHiding: true,
+  },
+  {
+    accessorKey: "created_at",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="建立時間" />
+    ),
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "last_signed_in",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="上次登錄時間" />
+    ),
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "role",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="角色" />
+    ),
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "active",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="活躍" />
+    ),
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "events",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="活動" />
+    ),
+    enableSorting: false,
+    enableHiding: true
+  },
+  {
+    accessorKey: "image",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="照片" />
+    ),
+    enableSorting: false,
+    enableHiding: true
+  }
+
+
+]
+
+
 export const Columns: ColumnDef<Columns, keyof Columns>[] = [
   {
     id: "select",

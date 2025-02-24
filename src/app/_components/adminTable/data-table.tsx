@@ -37,6 +37,7 @@ import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -84,6 +85,8 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  const {i18n, t} = useTranslation();
+
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
@@ -123,7 +126,7 @@ export function DataTable<TData, TValue>({
                             setImageDialogOpen(true);
                           }}
                         >
-                          Show Image
+                          {t('show_image')}
                         </Button>
                       ) : (
                         flexRender(

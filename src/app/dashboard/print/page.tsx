@@ -9,9 +9,12 @@ import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { checkImage, fetchData, fetchImage } from "@/server/actions";
 import { TopNav } from "@/app/_components/topnav";
+import { useTranslation } from "react-i18next";
 
 function convertToESTFormat(dateString: string): string {
   const date = new Date(dateString);
+  const {i18n, t} = useTranslation();
+
 
   return date.toLocaleTimeString("en-US", {
     year: "numeric",
@@ -54,6 +57,7 @@ export default function Print() {
       return { redirect: "/sign-in" };
     },
   });
+  const {i18n, t} = useTranslation();
 
   const idCardContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -95,7 +99,7 @@ export default function Print() {
       <div className="min-w-screen flex flex-col gap-4 justify-center items-center h-full mt-10">
         <div className="sm:inline hidden">
           <ReactToPrint
-            trigger={() => <Button>Print ID Card</Button>}
+            trigger={() => <Button>{t('print_card')}</Button>}
             content={() => idCardContainerRef.current}
           />
         </div>

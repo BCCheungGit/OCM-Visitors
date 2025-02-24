@@ -5,8 +5,9 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DataTable } from "../_components/adminTable/data-table";
-import { Columns } from "../_components/adminTable/columns";
+import { Columns, Columnszh } from "../_components/adminTable/columns";
 import { TopNav } from "../_components/topnav";
+import { useTranslation } from "react-i18next";
 
 
 type Columns = {
@@ -30,6 +31,8 @@ export default function AdminPage() {
   const router = useRouter();
   const [userList, setUserList] = useState<any | null>(null);
   const [userColumn, setUserColumn] = useState<Columns[]>([]);
+
+  const {i18n, t} = useTranslation();
 
   useEffect(() => {
     const getUserData = async () => {
@@ -68,13 +71,20 @@ export default function AdminPage() {
       <div className="h-full flex-1 flex-col space-y-8 p-8 flex sm:ml-5 sm:mr-5 ml-0 mr-0">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Welcome back!</h2>
+            <h2 className="text-2xl font-bold tracking-tight">{t('welcome_back')}</h2>
             <p className="text-muted-foreground">
-              Here&apos;s a list of all visitors and admins:
+              {t('heres_a_list')} 
             </p>
           </div>
         </div>
+        {i18n.language == "en" ? (
         <DataTable data={userColumn} columns={Columns} />
+
+
+        ): (
+        <DataTable data={userColumn} columns={Columnszh} />
+
+        )}
       </div>
       )}
     </div>
