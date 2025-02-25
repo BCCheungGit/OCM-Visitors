@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useTranslation } from "react-i18next";
 
 interface UserNavProps {
     firstname: string;
@@ -21,6 +22,7 @@ interface UserNavProps {
 
 
 export function UserNav(user: UserNavProps) {
+  const {i18n, t} = useTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -39,14 +41,14 @@ export function UserNav(user: UserNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-            {user.role == "admin" && <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/admin">Admin Dashboard</Link></DropdownMenuItem>}
-            <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/dashboard/print">My QR Code</Link></DropdownMenuItem> 
+            {user.role == "admin" && <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/admin">{t('user_nav_admin_dashboard')}</Link></DropdownMenuItem>}
+            <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/dashboard/print">{t('user_nav_qr')}</Link></DropdownMenuItem> 
           {/* <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/my-organizations">My Orgs</Link></DropdownMenuItem>
           <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/dashboard">My Tasks</Link></DropdownMenuItem>
           <DropdownMenuItem asChild className="hover:cursor-pointer"><Link href="/create-task">Create Task</Link></DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => signOut({callbackUrl:"/", redirect:true})}>Log out</DropdownMenuItem>
+        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => signOut({callbackUrl:"/", redirect:true})}>{t('logout')}</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
