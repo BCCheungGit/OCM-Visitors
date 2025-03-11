@@ -42,6 +42,7 @@ const CardComponent: React.FC<CardProps> = ({
         photo={userData?.user.image}
         name={`${userData?.user.firstname} ${userData?.user.lastname}`}
         phone={userData?.user.phonenumber}
+        role={userData?.user.role}
       />
 
     </div>

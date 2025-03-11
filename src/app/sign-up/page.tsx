@@ -20,6 +20,7 @@ import { PhoneInput } from "../../components/ui/phoneinput";
 import { TopNav } from "../_components/topnav";
 import { createVerification, signUp } from "@/server/actions";
 import { signIn } from "next-auth/react";
+import { useTranslation } from "react-i18next";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -32,6 +33,8 @@ export default function SignUpPage() {
   const [lastName, setLastName] = useState<string>("");
 
   const { toast } = useToast();
+
+  const {t, i18n} = useTranslation();
 
 const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission
@@ -97,7 +100,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       <TopNav />
       <div className="min-w-screen flex flex-col justify-center items-center h-full">
         <div className="sm:w-fit w-[400px] flex mt-10 flex-col items-center border-2 p-8 gap-6 rounded-lg shadow-xl">
-          <h1 className="sm:text-xl text-lg font-semibold">Sign Up</h1>
+          <h1 className="sm:text-xl text-lg font-semibold">{t('sign_up')}</h1>
           <form
             className="flex flex-col gap-4"
             onSubmit={handleFormSubmit}
@@ -111,7 +114,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                       className="sm:text-sm text-xs"
                       aria-required
                     >
-                      First Name 名字
+                     {t('first_name')} 
                     </label>
                     <Input required type="text" name="firstname" />
                   </div>
@@ -121,7 +124,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                       className="sm:text-sm text-xs"
                       aria-required
                     >
-                      Last Name 姓氏
+                      {t('last_name')}
                     </label>
                     <Input required type="text" name="lastname" />
                   </div>
@@ -132,7 +135,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     className="sm:text-sm text-xs"
                     aria-required
                   >
-                    Phone Number 電話號碼
+                    {t('phone_number')}
                   </label>
                   <PhoneInput
                     required
@@ -141,7 +144,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     value="+1"
                   />
                 </div>
-                <Button type="submit">Sign Up</Button>
+                <Button type="submit">{t('sign_up')}</Button>
               </div>
             )}
 
@@ -174,12 +177,12 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             )}
           </form>
           <div className="p-2 border-2 rounded-lg shadow-lg h-full flex flex-row items-center justify-center gap-4 w-full">
-            <p className="text-sm">Already have an account? </p>
+            <p className="text-sm">{t('already_have')} </p>
             <Link
               href="/sign-in"
               className="text-sm text-purple-700 hover:text-purple-100"
             >
-              Sign In
+            {t('sign_in')}
             </Link>
           </div>
         </div>
