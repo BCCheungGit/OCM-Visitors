@@ -45,15 +45,33 @@ export async function signUp(phone: string, code: string, formInfo: any) {
 
     if (verificationCheck.status == 'approved') {
         const prisma = new PrismaClient();
-        const newid = uuidv4();
         const user = await prisma.visitors_master.findFirst({
             where: {
                 phonenumber: phone,
             },
         })
         if (user) {
+            await prisma.$disconnect();
             return { error: 'User already exists' }
         }
+
+        let newid: string;
+        let isUnique = false;
+
+        while (!isUnique) {
+            newid = Math.floor(100000000 + Math.random() * 900000000).toString();
+            const existingUser = await prisma.visitors_master.findFirst({
+                where: {
+                    id: newid,
+                }
+            });
+            if (!existingUser) {
+                isUnique = true;
+            }
+        }
+
+
+
         const res = await prisma.visitors_master.create({
             data: {
                 id: newid,
@@ -74,6 +92,9 @@ export async function signUp(phone: string, code: string, formInfo: any) {
     }
 
 }
+
+
+
 export async function checkImage(uuid: string) {
     const prisma = new PrismaClient();
     const user = await prisma.visitors_master.findFirst({
