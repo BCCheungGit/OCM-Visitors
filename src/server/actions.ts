@@ -55,26 +55,26 @@ export async function signUp(phone: string, code: string, formInfo: any) {
             return { error: 'User already exists' }
         }
 
-        let newid: string;
-        let isUnique = false;
-
-        while (!isUnique) {
-            newid = Math.floor(100000000 + Math.random() * 900000000).toString();
-            const existingUser = await prisma.visitors_master.findFirst({
+        let newid = Math.floor(100000000 + Math.random() * 900000000).toString();
+        let existingUser = await prisma.visitors_master.findFirst({
                 where: {
                     id: newid,
                 }
             });
-            if (!existingUser) {
-                isUnique = true;
-            }
+            
+        while (existingUser) {
+            newid = Math.floor(100000000 + Math.random() * 900000000).toString();
+            existingUser = await prisma.visitors_master.findFirst({
+                where: {
+                    id: newid,
+                }
+            });
         }
-
-
+            
 
         const res = await prisma.visitors_master.create({
             data: {
-                id: newid,
+                id: newid ,
                 firstname: formInfo.firstname as string,
                 lastname: formInfo.lastname as string,
                 phonenumber: formInfo.phone as string,
