@@ -20,6 +20,20 @@ export const IDCard: React.FC<IDCardProps> = ({
   role,
 }) => {
   const { i18n, t } = useTranslation();
+
+
+  function generateExpirationDate(): string {
+    const currentDate = new Date();
+
+    currentDate.setDate(currentDate.getDate() + 14);
+
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    return `${year}${month}${day}`;
+  }
+
   return (
     <div className="dark:bg-slate-50 sm:w-[400px] sm:h-[280px] sm:p-[20px] p-[10px] leading-[35px] rounded-xl border-1 border-ocm-purple sm:border-t-[15px] sm:border-b-[15px] border-t-[10px] border-b-[10px] w-[300px] h-[200px] shadow-xl">
       <div className="min-w-full">
@@ -57,7 +71,7 @@ export const IDCard: React.FC<IDCardProps> = ({
                     <QRCode value={id} size={115} />
                   </div>
                   <div className="sm:hidden inline">
-                    <QRCode value={Date.now().toString() + id} size={85} />
+                    <QRCode value={generateExpirationDate() + "," + id} size={85} />
                   </div>
                 </div>
               </div>
