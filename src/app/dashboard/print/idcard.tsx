@@ -57,7 +57,7 @@ export const IDCard: React.FC<IDCardProps> = ({
                     <QRCode value={id} size={115} />
                   </div>
                   <div className="sm:hidden inline">
-                    <QRCode value={id} size={85} />
+                    <QRCode value={Date.now().toString() + id} size={85} />
                   </div>
                 </div>
               </div>
