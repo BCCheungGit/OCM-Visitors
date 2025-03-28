@@ -36,6 +36,7 @@ function CameraComponent({
     const imageSrc = webcamRef.current?.getScreenshot({
       width: isMobile ? height : width,
       height: isMobile ? width : height,
+
     });
     if (imageSrc) {
       setUrl(imageSrc);
@@ -45,6 +46,25 @@ function CameraComponent({
       console.log(imageSrc);
     }
   }, [webcamRef, setUrl]);
+
+
+  const uploadImage = async (folderName: string, fileName: string, base64Image: string) => {
+    const response = await fetch("/api/owncloud/putimage", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ folderName, fileName, base64Image  }),
+    })
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data.message);
+    } else {
+      const errorData = await response.json();
+      console.error("Error uploading image:", errorData.error);
+    }
+  }
+
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
@@ -75,7 +95,7 @@ function CameraComponent({
           <Webcam
             audio={false}
             ref={webcamRef}
-            screenshotFormat="image/jpeg"
+            screenshotFormat="image/png"
             videoConstraints={videoConstraints}
             mirrored={true}
           />
@@ -98,6 +118,9 @@ function CameraComponent({
                   userData.user.id,
                   formData.get("image") as string
                 );
+
+                uploadImage("visitorImages", userData.user.id + ".png", formData.get("image") as string);
+
                 onImageUpload();
               }}
             >
