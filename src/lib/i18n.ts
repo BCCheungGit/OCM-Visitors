@@ -23,6 +23,7 @@ const resources = {
       first_time: "First Time?",
       first_name: "First Name",
       last_name: "Last Name",
+      already_have: "Already have an account?"
     },
   },
   zh: {
@@ -41,11 +42,12 @@ const resources = {
       sign_in: "登入",
       sign_up: "注冊",
       visitor: "訪客",
-      admin: "官員",
+      admin: "管理員",
       phone_number: "電話號碼",
       first_time: "新訪客",
       first_name: "名字",
       last_name: "姓氏",
+      already_have: "已經有帳戶了嗎?"
     },
   },
 };
