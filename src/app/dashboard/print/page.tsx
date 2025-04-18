@@ -62,7 +62,6 @@ export default function Print() {
 
   const idCardContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const [image, setImage] = useState<string | null>(null);
   const [userData, setUserData] = useState<any | null>(null);
 
   useEffect(() => {
@@ -104,12 +103,15 @@ export default function Print() {
             content={() => idCardContainerRef.current}
           />
         </div>
+        
         {userData && (
           <CardComponent
             idCardContainerRef={idCardContainerRef}
             userData={JSON.parse(userData)}
           />
-        )}
+        )} 
+        
+
       </div>
     </div>
   );

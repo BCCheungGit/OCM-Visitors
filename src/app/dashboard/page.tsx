@@ -18,6 +18,9 @@ function CameraComponent({
   userData: any;
   onImageUpload: () => void;
 }) {
+
+ const baseUrl = "https://image.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&"
+
   const isMobile = window.innerWidth < 768;
   const width = isMobile ? 400 : 300;
   const height = isMobile ? 300 : 400;
@@ -40,10 +43,8 @@ function CameraComponent({
     });
     if (imageSrc) {
       setUrl(imageSrc);
-      console.log(imageSrc);
 
       setCaptureEnable(false);
-      console.log(imageSrc);
     }
   }, [webcamRef, setUrl]);
 
@@ -58,14 +59,28 @@ function CameraComponent({
     })
     if (response.ok) {
       const data = await response.json();
-      console.log(data.message);
     } else {
       const errorData = await response.json();
       console.error("Error uploading image:", errorData.error);
     }
   }
 
-
+  const getImageToken = async (folderName: string, fileName: string) => {
+    const response = await fetch("/api/owncloud/gettoken", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ folderName, fileName }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.token;
+    } else {
+      console.error("Error getting token:", response.statusText);
+    }
+  }
+  
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <div>
@@ -114,13 +129,18 @@ function CameraComponent({
             </Button>
             <form
               action={async (formData) => {
-                await updateImage(
-                  userData.user.id,
-                  formData.get("image") as string
-                );
+
 
                 uploadImage("visitorImages", userData.user.id + ".png", formData.get("image") as string);
-
+                const token = await getImageToken(
+                  "visitorImages",
+                  userData.user.id + ".png"
+                );
+                console.log(token);
+                await updateImage(
+                  userData.user.id,
+                  `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`
+                );
                 onImageUpload();
               }}
             >
