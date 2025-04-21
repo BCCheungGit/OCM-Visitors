@@ -32,7 +32,7 @@ export default function SignInPage() {
 
   const { toast } = useToast();
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault(); 
     const formData = new FormData(e.currentTarget);
     if (otpSent) {
       await handleSignIn();
@@ -42,7 +42,6 @@ export default function SignInPage() {
   };
 
   const handleSubmit = async (formData: FormData) => {
-    console.log("signing up");
     const phoneNumber = formData.get("phone") as string;
     const res = await createVerification(phoneNumber);
     if (typeof res === "object" && res.error) {
@@ -63,14 +62,12 @@ export default function SignInPage() {
   };
 
   const handleSignIn = async () => {
-    console.log("verifying otp");
 
     const res = await signIn("credentials", {
         redirect: false,
         phoneNumber: phoneNumber,
         otpValue: otpValue,
     }) 
-    console.log(res);
     if (typeof res === "object" && res.error) {
       toast({
         title: "Verification Error",

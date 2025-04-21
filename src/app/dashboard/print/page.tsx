@@ -7,14 +7,12 @@ import ReactToPrint from "react-to-print";
 import { Button } from "@/components/ui/button";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { checkImage, fetchData, fetchImage } from "@/server/actions";
+import { checkImage, fetchData} from "@/server/actions";
 import { TopNav } from "@/app/_components/topnav";
 import { useTranslation } from "react-i18next";
 
 function convertToESTFormat(dateString: string): string {
   const date = new Date(dateString);
-  const {i18n, t} = useTranslation();
-
 
   return date.toLocaleTimeString("en-US", {
     year: "numeric",
@@ -83,11 +81,10 @@ export default function Print() {
     const getImageStatus = async () => {
         console.log(session?.user)
       if (session?.user.id) {
-        const res = await fetchImage(session.user.id);
-        if (typeof res === "object" && res.error) {
+        const res = await checkImage(session.user.id);
+        if (res == false) {
           router.push("/dashboard");
         } 
-        
       }
     };
     getImageStatus();
@@ -99,7 +96,7 @@ export default function Print() {
       <div className="min-w-screen flex flex-col gap-4 justify-center items-center h-full mt-10">
         <div className="sm:inline hidden">
           <ReactToPrint
-            trigger={() => <Button>{t('print_card')}</Button>}
+            trigger={() => <Button>Print 列印ID卡</Button>}
             content={() => idCardContainerRef.current}
           />
         </div>

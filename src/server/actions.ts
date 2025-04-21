@@ -5,7 +5,6 @@ import { PrismaClient } from "@prisma/client";
 import twilio from 'twilio';
 
 
-import { v4 as uuidv4 } from 'uuid';
 
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -140,19 +139,7 @@ export async function updateImage(uuid: string | undefined, image: string) {
 
 
 
-export async function fetchImage(uuid: string) {
-    const prisma = new PrismaClient();
-    const user = await prisma.visitors_master.findFirst({
-        where: {
-            id: uuid
-        }
-    })
-    await prisma.$disconnect();
-    if (!user) {
-        return {error: 'User not found'};
-    }
-    return JSON.stringify({image: user.image});
-}
+
 
 
 export async function fetchData(uuid: string) {
