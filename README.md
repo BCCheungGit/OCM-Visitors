@@ -36,11 +36,11 @@ OCM Visitors is a simple web application that allows you to track visitors to OC
     - [x] Admin dashboard
     - [x] Navbar
     - [x] Sign in / Sign up pages
-- [ ] Owncloud api support
+- [x] Owncloud api support
     - [x] Create a new folder
     - [x] Upload images to folder
     - [x] Get images from folder
-    - [ ] Public share link
-    - [ ] Change to support OwnCloud rather than PostgresDB for images
+    - [x] Public share link
+    - [x] Change to support OwnCloud rather than PostgresDB for images
 ## Future Features
 - [ ] Expand to use the full database and allow general members to also use the app to sign in
