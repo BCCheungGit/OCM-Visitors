@@ -94,6 +94,26 @@ export async function signUp(phone: string, code: string, formInfo: any) {
 
 
 
+
+export async function deleteUser(userId: string) {
+    const prisma = new PrismaClient();
+
+    try {
+        await prisma.visitors_master.delete({
+            where: {
+                id: userId
+            },
+        })
+    } catch (e: any) {
+        await prisma.$disconnect();
+        console.error(e);
+        process.exit(1);
+    }
+    await prisma.$disconnect();
+}
+
+
+
 export async function checkImage(uuid: string) {
     const prisma = new PrismaClient();
     const user = await prisma.visitors_master.findFirst({
