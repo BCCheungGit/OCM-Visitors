@@ -1,13 +1,13 @@
 # OCM-Visitors
 OCM Visitors is a simple web application that allows you to track visitors to OCM church. This project was originally built using Supabase, a Firebase alternative that is open-source and self-hosted, however now it is built using Prisma and Postgres. 
 
+An Owncloud API is used to store images of the visitors. It was built from scratch using Typescript since only a Python API wrapper currently exists. In the future I may make a more complete wrapper for the API in Typescript.
 
 ## Features
 - Add new visitors
 - View all visitors
 - Search for visitors
 - Update visitor details
-- Delete visitor
 
 ## Final Product Plan
 - Active Users: about 60 per week -> about 3120 per year

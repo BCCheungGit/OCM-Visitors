@@ -29,7 +29,7 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
-//   const selectedRows = table.getFilteredSelectedRowModel().rows;
+  const selectedRows = table.getFilteredSelectedRowModel().rows;
 //   const [isCompleteOpen, setIsCompleteOpen] = useState(false);
 //   const [deleteOpen, setDeleteOpen] = useState(false);
   const {data: session} = useSession();
