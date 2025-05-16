@@ -5,11 +5,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { IDCard } from "./idcard";
 import ReactToPrint from "react-to-print";
 import { Button } from "@/components/ui/button";
-import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { checkImage, fetchData} from "@/server/actions";
 import { TopNav } from "@/app/_components/topnav";
-import { useTranslation } from "react-i18next";
 
 function convertToESTFormat(dateString: string): string {
   const date = new Date(dateString);
@@ -56,7 +54,6 @@ export default function Print() {
       return { redirect: "/sign-in" };
     },
   });
-  const {i18n, t} = useTranslation();
 
   const idCardContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();

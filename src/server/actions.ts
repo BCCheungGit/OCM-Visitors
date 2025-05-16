@@ -12,12 +12,10 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 
 const service = process.env.TWILIO_SERVICE_SID || '';
 
-const client = twilio(accountSid, authToken);
-
-
 
 export async function createVerification(phone: string) {
-    if (!phone) {
+
+  if (!phone) {
         return { error: 'Phone number is required' }
     }
     const client = twilio(accountSid, authToken);
@@ -32,7 +30,11 @@ export async function createVerification(phone: string) {
 
 
 export async function signUp(phone: string, code: string, formInfo: any) {
-    if (!phone || !code) {
+
+  const client = twilio(accountSid, authToken);
+
+
+  if (!phone || !code) {
         return { error: 'Phone number and code are required' }
     }
     const verificationCheck = await client.verify.v2
@@ -42,7 +44,7 @@ export async function signUp(phone: string, code: string, formInfo: any) {
             code: code,
         });
 
-    if (verificationCheck.status == 'approved') {
+  if (verificationCheck.status == 'approved') {
         const prisma = new PrismaClient();
         const user = await prisma.visitors_master.findFirst({
             where: {

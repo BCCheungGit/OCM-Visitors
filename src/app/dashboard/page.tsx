@@ -130,17 +130,15 @@ function CameraComponent({
             <form
               action={async (formData) => {
 
-
                 uploadImage("visitorImages", userData.user.id + ".png", formData.get("image") as string);
                 const token = await getImageToken(
                   "visitorImages",
                   userData.user.id + ".png"
                 );
-                console.log(token);
-                await updateImage(
-                  userData.user.id,
-                  `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`
-                );
+               // await updateImage(
+               //   userData.user.id,
+               //   `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`
+               // );
                 onImageUpload();
               }}
             >
