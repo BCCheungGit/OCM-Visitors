@@ -135,10 +135,10 @@ function CameraComponent({
                   "visitorImages",
                   userData.user.id + ".png"
                 );
-               // await updateImage(
-               //   userData.user.id,
-               //   `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`
-               // );
+                await updateImage(
+                  userData.user.id,
+                  `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`
+                );
                 onImageUpload();
               }}
             >
