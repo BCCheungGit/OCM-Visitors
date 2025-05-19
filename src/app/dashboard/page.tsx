@@ -1,13 +1,13 @@
 // "use client";
 "use client";
+import { Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { checkImage, fetchData, updateImage } from "@/server/actions";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useTransition, useCallback, useEffect, useState, useRef } from "react";
 import Webcam from "react-webcam";
 import { usePathname } from 'next/navigation';
-
 import { TopNav } from "../_components/topnav";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -34,6 +34,9 @@ function CameraComponent({
   const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
   const webcamRef = useRef<Webcam>(null);
   const [url, setUrl] = useState<string | null>(null);
+
+  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot({
@@ -80,6 +83,23 @@ function CameraComponent({
       console.error("Error getting token:", response.statusText);
     }
   }
+
+  const handleUpload = async (formData: FormData) => {
+    setLoading(true);
+    try {
+      await uploadImage("visitorImages", userData.user.id + ".png", formData.get("image") as string);
+      const token = await getImageToken("visitorImages", userData.user.id + ".png");
+
+      await updateImage(
+        userData.user.id,
+        `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`
+      );
+
+      onImageUpload();
+    } finally {
+      setLoading(false);
+    }
+  };
 
  return (
     <div className="flex flex-col items-center justify-center gap-4">
@@ -128,31 +148,21 @@ function CameraComponent({
               Delete
             </Button>
             <form
-              action={async (formData) => {
-                toast({
-                  title: "Uploading Image",
-                  description: "Please wait a moment",
-                  variant: "default"
-                })
-                await uploadImage("visitorImages", userData.user.id + ".png", formData.get("image") as string);
-                const token = await getImageToken(
-                  "visitorImages",
-                  userData.user.id + ".png"
-                );
-                
-                console.log("token: ", token);  
-
-
-                await updateImage(
-                  userData.user.id,
-                  `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`
-                );
-                onImageUpload();
+              action={(formData) => {
+              startTransition(() => {
+                handleUpload(formData);
+              }) 
               }}
             >
               <input name="image" defaultValue={url} hidden />
-              <Button className="w-fit" type="submit">
-                Upload Image
+              <Button className="w-fit" type="submit" disabled={loading || isPending}>
+     {loading || isPending ? (
+  <span className="flex items-center gap-2">
+    <Loader className="animate-spin w-4 h-4" /> Uploading...
+  </span>
+) : (
+  "Upload Image"
+)}
               </Button>
             </form>
           </div>
@@ -190,9 +200,7 @@ useEffect(() => {
     if (session) {
       const user = await fetchData(session.user.id);
       if (typeof user === "object" && user.error) {
-        if (pathname !== "/") {
         await signOut(); 
-        }
       } else {
         setUserData(user);
       }
