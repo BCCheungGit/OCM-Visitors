@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { NextResponse } from "next/server";
 
-const BASE_URL = "https://image.cloudority.com"
+const BASE_URL = "https://store.cloudority.com"
 const USERNAME = process.env.OWNCLOUD_USERNAME || "";
 const PASSWORD = process.env.OWNCLOUD_PASSWORD || "";
 

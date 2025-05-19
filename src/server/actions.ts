@@ -14,7 +14,7 @@ const service = process.env.TWILIO_SERVICE_SID || '';
 
 
 export async function createVerification(phone: string) {
-
+  console.log(service);
   if (!phone) {
         return { error: 'Phone number is required' }
     }
@@ -89,7 +89,7 @@ export async function signUp(phone: string, code: string, formInfo: any) {
         await prisma.$disconnect();
         return JSON.stringify({ res });
     } else {
-        return { error: 'Invalid OTP' }
+        throw new Error('Verification failed');
     }
 
 }

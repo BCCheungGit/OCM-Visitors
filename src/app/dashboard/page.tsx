@@ -6,8 +6,10 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, useRef } from "react";
 import Webcam from "react-webcam";
+import { usePathname } from 'next/navigation';
 
 import { TopNav } from "../_components/topnav";
+import { useToast } from "@/components/ui/use-toast";
 
 
 function CameraComponent({
@@ -19,11 +21,11 @@ function CameraComponent({
 }) {
 
  const baseUrl = "https://store.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&"
+  const {toast} = useToast();
 
   const isMobile = window.innerWidth < 768;
   const width = isMobile ? 400 : 300;
   const height = isMobile ? 300 : 400;
-  console.log("mobile: ", isMobile);
   const videoConstraints = {
     width: width,
     height: height,
@@ -78,8 +80,8 @@ function CameraComponent({
       console.error("Error getting token:", response.statusText);
     }
   }
-  
-  return (
+
+ return (
     <div className="flex flex-col items-center justify-center gap-4">
       <div>
         Welcome, {userData.user.firstname} {userData.user.lastname}
@@ -127,7 +129,11 @@ function CameraComponent({
             </Button>
             <form
               action={async (formData) => {
-                console.log("uploading image");
+                toast({
+                  title: "Uploading Image",
+                  description: "Please wait a moment",
+                  variant: "default"
+                })
                 await uploadImage("visitorImages", userData.user.id + ".png", formData.get("image") as string);
                 const token = await getImageToken(
                   "visitorImages",
@@ -163,7 +169,6 @@ export default function Dashboard() {
   const [imageStatus, setImageStatus] = useState<boolean>(false);
   const router = useRouter();
   const [userData, setUserData] = useState<any | null>(null);
-
   useEffect(() => {
     const getImageStatus = async () => {
       if (session?.user?.id) {
@@ -177,20 +182,28 @@ export default function Dashboard() {
     getImageStatus();
   }, [imageStatus, session, session?.user]);
 
-  useEffect(() => {
-    const getUserData = async () => {
-      if (session) {
-        const user = await fetchData(session.user.id);
-        if (typeof user === "object" && user.error) {
-          router.push("/");
-        } else {
-          setUserData(user);
-        }
-      }
-    };
-    getUserData();
-  }, [session]);
 
+const pathname = usePathname();
+
+useEffect(() => {
+  const getUserData = async () => {
+    if (session) {
+      const user = await fetchData(session.user.id);
+      if (typeof user === "object" && user.error) {
+        if (pathname !== "/") {
+        await signOut(); 
+        }
+      } else {
+        setUserData(user);
+      }
+    } else {
+      if (pathname !== "/") {
+        router.push("/");
+      }
+    }
+  };
+  getUserData();
+}, [session, pathname]);
   const handleImageUpload = () => {
     setImageStatus(true);
   };

@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { use, useEffect, useState } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 import Link from "next/link";
 
 import { PhoneInput } from "../../components/ui/phoneinput";
@@ -71,30 +70,43 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     }
   };
 
-  const handleSignUp = async () => {
-    console.log("verifying otp");
-      
-    try {
-        await signUp(phoneNumber, otpValue, {firstname: firstName, lastname: lastName, phone: phoneNumber});
+  
+const handleSignUp = async () => {
+  console.log("verifying otp");
 
-        await signIn("credentials", {
-            redirect: false,
-            phoneNumber: phoneNumber,
-            otpValue: otpValue,
-            signup: true,
-        }) 
-        router.push("/dashboard");
-      } catch (e) {
-        console.error(e);
-        toast({
-          title: "Sign Up Error",
-          description: "An error occurred while signing up.",
-          variant: "destructive",
-        });
-      } 
+  try {
+    await signUp(phoneNumber, otpValue, {
+      firstname: firstName,
+      lastname: lastName,
+      phone: phoneNumber,
+    });
 
-  };
+    const result = await signIn("credentials", {
+      redirect: false,
+      phoneNumber,
+      otpValue,
+      signup: true,
+    });
 
+    if (result?.error) {
+      console.error("SignIn Error:", result.error);
+      toast({
+        title: "Sign In Error",
+        description: result.error,
+        variant: "destructive",
+      });
+    } else {
+      router.push("/dashboard");
+    }
+  } catch (e) {
+    console.error("SignUp Exception:", e);
+    toast({
+      title: "Sign Up Error",
+      description: "An error occurred while signing up.",
+      variant: "destructive",
+    });
+  }
+};
   return (
     <>
       <TopNav />
