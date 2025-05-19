@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { NextResponse } from "next/server";
 import { xml2json } from 'xml-js';
-const BASE_URL = "https://image.cloudority.com/ocs/v1.php/apps/files_sharing/api/v1/shares"
+const BASE_URL = "https://store.cloudority.com/ocs/v1.php/apps/files_sharing/api/v1/shares"
 const USERNAME = process.env.OWNCLOUD_USERNAME || "";
 const PASSWORD = process.env.OWNCLOUD_PASSWORD || "";
 
@@ -41,6 +41,7 @@ async function getToken(folderName: string, fileName: string): Promise<String> {
         const jsonData = JSON.parse(json);
         const token = jsonData.ocs.data.token._text;
         if (token) {
+            console.log("Token:", token); 
             return token;
         } else {
             throw new Error("Token not found in response data");

@@ -9,7 +9,6 @@ import Webcam from "react-webcam";
 
 import { TopNav } from "../_components/topnav";
 
-import { Session } from "next-auth";
 
 function CameraComponent({
   userData,
@@ -19,7 +18,7 @@ function CameraComponent({
   onImageUpload: () => void;
 }) {
 
- const baseUrl = "https://image.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&"
+ const baseUrl = "https://store.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&"
 
   const isMobile = window.innerWidth < 768;
   const width = isMobile ? 400 : 300;
@@ -33,7 +32,6 @@ function CameraComponent({
   const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
   const webcamRef = useRef<Webcam>(null);
   const [url, setUrl] = useState<string | null>(null);
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot({
@@ -129,12 +127,16 @@ function CameraComponent({
             </Button>
             <form
               action={async (formData) => {
-
-                uploadImage("visitorImages", userData.user.id + ".png", formData.get("image") as string);
+                console.log("uploading image");
+                await uploadImage("visitorImages", userData.user.id + ".png", formData.get("image") as string);
                 const token = await getImageToken(
                   "visitorImages",
                   userData.user.id + ".png"
                 );
+                
+                console.log("token: ", token);  
+
+
                 await updateImage(
                   userData.user.id,
                   `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`
@@ -148,6 +150,7 @@ function CameraComponent({
               </Button>
             </form>
           </div>
+
           <img src={url} alt="captured" />
         </>
       )}
