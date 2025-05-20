@@ -1,12 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IDCard } from "./idcard";
 import ReactToPrint from "react-to-print";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { checkImage, fetchData} from "@/server/actions";
+import { checkImage, fetchData } from "@/server/actions";
 import { TopNav } from "@/app/_components/topnav";
 
 function convertToESTFormat(dateString: string): string {
@@ -40,15 +40,16 @@ const CardComponent: React.FC<CardProps> = ({
         phone={userData?.user.phonenumber}
         role={userData?.user.role}
       />
-
     </div>
   );
 };
 
-
-
 export default function Print() {
-  const { data: session, status, update } = useSession({
+  const {
+    data: session,
+    status,
+    update,
+  } = useSession({
     required: true,
     onUnauthenticated() {
       return { redirect: "/sign-in" };
@@ -67,25 +68,24 @@ export default function Print() {
           router.push("/");
         } else {
           setUserData(user);
-        } 
-
+        }
       }
-    }
+    };
     getUserData();
-  }, [session])
+  }, [session]);
 
   useEffect(() => {
     const getImageStatus = async () => {
-        console.log(session?.user)
+      console.log(session?.user);
       if (session?.user.id) {
         const res = await checkImage(session.user.id);
         if (res == false) {
           router.push("/dashboard");
-        } 
+        }
       }
     };
     getImageStatus();
-  }, [session, session?.user ]);
+  }, [session, session?.user]);
 
   return (
     <div>
@@ -97,15 +97,13 @@ export default function Print() {
             content={() => idCardContainerRef.current}
           />
         </div>
-        
+
         {userData && (
           <CardComponent
             idCardContainerRef={idCardContainerRef}
             userData={JSON.parse(userData)}
           />
-        )} 
-        
-
+        )}
       </div>
     </div>
   );

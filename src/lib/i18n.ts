@@ -1,5 +1,5 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
 
 const resources = {
   en: {
@@ -23,7 +23,7 @@ const resources = {
       first_time: "First Time?",
       first_name: "First Name",
       last_name: "Last Name",
-      already_have: "Already have an account?"
+      already_have: "Already have an account?",
     },
   },
   zh: {
@@ -47,23 +47,22 @@ const resources = {
       first_time: "新訪客",
       first_name: "名字",
       last_name: "姓氏",
-      already_have: "已經有帳戶了嗎?"
+      already_have: "已經有帳戶了嗎?",
     },
   },
 };
 
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: 'en', // default language
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false, // React already protects from XSS
-    },
-  });
+i18n.use(initReactI18next).init({
+  resources,
+  lng: "en", // default language
+  fallbackLng: "en",
+  interpolation: {
+    escapeValue: false,
+  },
+});
 
-const savedLang = typeof window !== "undefined" ? localStorage.getItem("lng") : "en";
+const savedLang =
+  typeof window !== "undefined" ? localStorage.getItem("lng") : "en";
 
 i18n.init({
   lng: savedLang || "en",
@@ -74,6 +73,5 @@ i18n.on("languageChanged", (lng) => {
     localStorage.setItem("lng", lng);
   }
 });
-
 
 export default i18n;

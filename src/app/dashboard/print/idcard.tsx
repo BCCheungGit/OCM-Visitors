@@ -21,15 +21,14 @@ export const IDCard: React.FC<IDCardProps> = ({
 }) => {
   const { i18n, t } = useTranslation();
 
-
   function generateExpirationDate(): string {
     const currentDate = new Date();
 
     currentDate.setDate(currentDate.getDate() + 14);
 
     const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
-    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const day = String(currentDate.getDate()).padStart(2, "0");
 
     return `${year}${month}${day}`;
   }
@@ -71,7 +70,10 @@ export const IDCard: React.FC<IDCardProps> = ({
                     <QRCode value={id} size={115} />
                   </div>
                   <div className="sm:hidden inline">
-                    <QRCode value={generateExpirationDate() + "," + id} size={85} />
+                    <QRCode
+                      value={generateExpirationDate() + "," + id}
+                      size={85}
+                    />
                   </div>
                 </div>
               </div>

@@ -44,6 +44,7 @@ Users can enter in a phone number to sign up/sign in, which will allow them to a
     - [x] Get images from folder
     - [x] Public share link
     - [x] Change to support OwnCloud rather than PostgresDB for images
+- [x] Create a QR code for the image
 
 ## Future Features
 - [ ] Expand to use the full database and allow general members to also use the app to sign in

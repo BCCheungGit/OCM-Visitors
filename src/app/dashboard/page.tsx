@@ -7,10 +7,9 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTransition, useCallback, useEffect, useState, useRef } from "react";
 import Webcam from "react-webcam";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import { TopNav } from "../_components/topnav";
 import { useToast } from "@/components/ui/use-toast";
-
 
 function CameraComponent({
   userData,
@@ -19,9 +18,9 @@ function CameraComponent({
   userData: any;
   onImageUpload: () => void;
 }) {
-
- const baseUrl = "https://store.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&"
-  const {toast} = useToast();
+  const baseUrl =
+    "https://store.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&";
+  const { toast } = useToast();
 
   const isMobile = window.innerWidth < 768;
   const width = isMobile ? 400 : 300;
@@ -42,7 +41,6 @@ function CameraComponent({
     const imageSrc = webcamRef.current?.getScreenshot({
       width: isMobile ? height : width,
       height: isMobile ? width : height,
-
     });
     if (imageSrc) {
       setUrl(imageSrc);
@@ -51,22 +49,25 @@ function CameraComponent({
     }
   }, [webcamRef, setUrl]);
 
-
-  const uploadImage = async (folderName: string, fileName: string, base64Image: string) => {
+  const uploadImage = async (
+    folderName: string,
+    fileName: string,
+    base64Image: string,
+  ) => {
     const response = await fetch("/api/owncloud/putimage", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ folderName, fileName, base64Image  }),
-    })
+      body: JSON.stringify({ folderName, fileName, base64Image }),
+    });
     if (response.ok) {
       const data = await response.json();
     } else {
       const errorData = await response.json();
       console.error("Error uploading image:", errorData.error);
     }
-  }
+  };
 
   const getImageToken = async (folderName: string, fileName: string) => {
     const response = await fetch("/api/owncloud/gettoken", {
@@ -82,17 +83,24 @@ function CameraComponent({
     } else {
       console.error("Error getting token:", response.statusText);
     }
-  }
+  };
 
   const handleUpload = async (formData: FormData) => {
     setLoading(true);
     try {
-      await uploadImage("visitorImages", userData.user.id + ".png", formData.get("image") as string);
-      const token = await getImageToken("visitorImages", userData.user.id + ".png");
+      await uploadImage(
+        "visitorImages",
+        userData.user.id + ".png",
+        formData.get("image") as string,
+      );
+      const token = await getImageToken(
+        "visitorImages",
+        userData.user.id + ".png",
+      );
 
       await updateImage(
         userData.user.id,
-        `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`
+        `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`,
       );
 
       onImageUpload();
@@ -101,7 +109,7 @@ function CameraComponent({
     }
   };
 
- return (
+  return (
     <div className="flex flex-col items-center justify-center gap-4">
       <div>
         Welcome, {userData.user.firstname} {userData.user.lastname}
@@ -149,24 +157,27 @@ function CameraComponent({
             </Button>
             <form
               action={(formData) => {
-              startTransition(() => {
-                handleUpload(formData);
-              }) 
+                startTransition(() => {
+                  handleUpload(formData);
+                });
               }}
             >
               <input name="image" defaultValue={url} hidden />
-              <Button className="w-fit" type="submit" disabled={loading || isPending}>
-     {loading || isPending ? (
-  <span className="flex items-center gap-2">
-    <Loader className="animate-spin w-4 h-4" /> Uploading...
-  </span>
-) : (
-  "Upload Image"
-)}
+              <Button
+                className="w-fit"
+                type="submit"
+                disabled={loading || isPending}
+              >
+                {loading || isPending ? (
+                  <span className="flex items-center gap-2">
+                    <Loader className="animate-spin w-4 h-4" /> Uploading...
+                  </span>
+                ) : (
+                  "Upload Image"
+                )}
               </Button>
             </form>
           </div>
-
           <img src={url} alt="captured" />
         </>
       )}
@@ -192,26 +203,25 @@ export default function Dashboard() {
     getImageStatus();
   }, [imageStatus, session, session?.user]);
 
+  const pathname = usePathname();
 
-const pathname = usePathname();
-
-useEffect(() => {
-  const getUserData = async () => {
-    if (session) {
-      const user = await fetchData(session.user.id);
-      if (typeof user === "object" && user.error) {
-        await signOut(); 
+  useEffect(() => {
+    const getUserData = async () => {
+      if (session) {
+        const user = await fetchData(session.user.id);
+        if (typeof user === "object" && user.error) {
+          await signOut();
+        } else {
+          setUserData(user);
+        }
       } else {
-        setUserData(user);
+        if (pathname !== "/") {
+          router.push("/");
+        }
       }
-    } else {
-      if (pathname !== "/") {
-        router.push("/");
-      }
-    }
-  };
-  getUserData();
-}, [session, pathname]);
+    };
+    getUserData();
+  }, [session, pathname]);
   const handleImageUpload = () => {
     setImageStatus(true);
   };
