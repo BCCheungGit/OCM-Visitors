@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const [imageDialogOpen, setImageDialogOpen] = React.useState(false);
-  const [image, setImage] = React.useState<string | null>(null);
+  const [image, setImage] = React.useState<string>('');
 
   const table = useReactTable({
     data,
