@@ -121,13 +121,11 @@ export async function checkImage(uuid: string) {
       id: uuid,
     },
   });
-  console.log(user);
   await prisma.$disconnect();
   if (!user) {
     return false;
   }
-  if (user.image) {
-    console.log(user.image);
+  if (user.image && typeof user.image == "string") {
     return true;
   }
   return false;

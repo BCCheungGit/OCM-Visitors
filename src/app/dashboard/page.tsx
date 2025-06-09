@@ -178,7 +178,7 @@ function CameraComponent({
               </Button>
             </form>
           </div>
-          <img src={url} alt="captured" />
+          <img src={typeof url == "string" ? url : ""} alt="captured" />
         </>
       )}
     </div>
@@ -190,19 +190,22 @@ export default function Dashboard() {
   const [imageStatus, setImageStatus] = useState<boolean>(false);
   const router = useRouter();
   const [userData, setUserData] = useState<any | null>(null);
+
   useEffect(() => {
     const getImageStatus = async () => {
       if (session?.user?.id) {
         const result = await checkImage(session.user.id);
-        if (result || imageStatus) {
+        setImageStatus(result);
+        //console.log("has image: ", imageStatus);
+        if (result) {
+          console.log("has image: ", imageStatus);
+
           router.push("/dashboard/print");
         }
-        setImageStatus(result);
       }
     };
     getImageStatus();
-  }, [imageStatus, session, session?.user]);
-
+  }, [session]);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -214,7 +217,7 @@ export default function Dashboard() {
         } else {
           setUserData(user);
         }
-      } else {
+      } else if (status != "loading") {
         if (pathname !== "/") {
           router.push("/");
         }

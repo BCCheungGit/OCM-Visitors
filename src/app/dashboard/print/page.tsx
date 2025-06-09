@@ -60,6 +60,8 @@ export default function Print() {
   const router = useRouter();
   const [userData, setUserData] = useState<any | null>(null);
 
+  const [hasCheckedImage, setHasCheckedImage] = useState<boolean>(false);
+
   useEffect(() => {
     const getUserData = async () => {
       if (session) {
@@ -79,31 +81,37 @@ export default function Print() {
       if (session?.user.id) {
         const res = await checkImage(session.user.id);
         if (res == false) {
-          router.push("/dashboard");
+          router.replace("/dashboard");
+          return;
         }
+        setHasCheckedImage(true);
       }
     };
     getImageStatus();
-  }, []);
+  }, [session]);
 
-  return (
-    <div>
-      <TopNav />
-      <div className="min-w-screen flex flex-col gap-4 justify-center items-center h-full mt-10">
-        <div className="sm:inline hidden">
-          <ReactToPrint
-            trigger={() => <Button>Print 列印ID卡</Button>}
-            content={() => idCardContainerRef.current}
-          />
+  if (hasCheckedImage) {
+    return (
+      <div>
+        <TopNav />
+        <div className="min-w-screen flex flex-col gap-4 justify-center items-center h-full mt-10">
+          <div className="sm:inline hidden">
+            <ReactToPrint
+              trigger={() => <Button>Print 列印ID卡</Button>}
+              content={() => idCardContainerRef.current}
+            />
+          </div>
+
+          {userData && (
+            <CardComponent
+              idCardContainerRef={idCardContainerRef}
+              userData={JSON.parse(userData)}
+            />
+          )}
         </div>
-
-        {userData && (
-          <CardComponent
-            idCardContainerRef={idCardContainerRef}
-            userData={JSON.parse(userData)}
-          />
-        )}
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <div>Checking image...</div>;
+  }
 }
