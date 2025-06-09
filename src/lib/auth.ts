@@ -24,7 +24,6 @@ export const authOptions: NextAuthOptions = {
       },
       authorize: async (credentials) => {
         const prisma = new PrismaClient();
-        console.log(formatPhoneNumber(credentials?.phoneNumber));
         if (credentials?.signup) {
           const user = await prisma.visitors_master.findFirst({
             where: {
