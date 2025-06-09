@@ -3,6 +3,17 @@ import type { NextAuthOptions } from "next-auth";
 import credentials from "next-auth/providers/credentials";
 import twilio from "twilio";
 
+function formatPhoneNumber(phone: string): string {
+  // force the phone number to be in the USA
+  if (phone.startsWith("+1")) {
+    return phone;
+  } else if (phone.startsWith("1")) {
+    return `+${phone}`;
+  } else {
+    return `+1${phone}`;
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     credentials({
@@ -18,7 +29,7 @@ export const authOptions: NextAuthOptions = {
         if (credentials?.signup) {
           const user = await prisma.visitors_master.findFirst({
             where: {
-              phonenumber: credentials.phoneNumber,
+              phonenumber: formatPhoneNumber(credentials.phoneNumber),
             },
           });
           if (!user) {
@@ -38,13 +49,13 @@ export const authOptions: NextAuthOptions = {
           const verificationCheck = await client.verify.v2
             .services(service)
             .verificationChecks.create({
-              to: credentials.phoneNumber,
+              to: formatPhoneNumber(credentials.phoneNumber),
               code: credentials.otpValue,
             });
           if (verificationCheck.status === "approved") {
             const user = await prisma.visitors_master.findFirst({
               where: {
-                phonenumber: credentials.phoneNumber,
+                phonenumber: formatPhoneNumber(credentials.phoneNumber),
               },
             });
             if (!user) {
