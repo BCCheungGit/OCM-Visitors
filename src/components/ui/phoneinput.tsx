@@ -41,7 +41,11 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
           ref={ref}
           className={cn("flex", className)}
           flagComponent={FlagComponent}
-          countrySelectComponent={(props) => (<CountrySelect {...props} disabled />)}
+          country="US"
+          defaultCountry="US"
+          countrySelectComponent={(props) => (
+            <CountrySelect {...props} disabled />
+          )}
           inputComponent={InputComponent}
           /**
            * Handles the onChange event.
@@ -52,13 +56,12 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
            *
            * @param {E164Number | undefined} value - The entered value
            */
-          
+
           onChange={(value) => {
             if (value !== undefined) {
               onChange?.(value);
             }
           }}
-          
           {...props}
         />
       );
@@ -132,10 +135,7 @@ const CountrySelect = ({
                       key={option.value}
                       onSelect={() => handleSelect(option.value)}
                     >
-                      <FlagComponent
-                        country={option.value}
-                        countryName={option.label}
-                      />
+                      <FlagComponent country="US" countryName="United States" />
                       <span className="flex-1 text-sm">{option.label}</span>
                       {option.value && (
                         <span className="text-foreground/50 text-sm">
