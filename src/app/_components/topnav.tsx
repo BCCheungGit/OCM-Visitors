@@ -97,25 +97,27 @@ export function TopNav() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <div className="flex flex-row gap-2 justify-center items-center">
-          <div className="sm:text-sm text-xs font-normal">en</div>
-          <Switch
-            className="data-[state=checked]:bg-neutral-500 data-[state=unchecked]:bg-neutral-500"
-            checked={i18n.language == "zh"}
-            onCheckedChange={() => {
-              changeLanguage();
-            }}
-          />
-          <div className="sm:text-sm text-xs font-normal">中</div>
-          {/* <Button onClick={() => changeLanguage()}>{t('change_language')}</Button> */}
+        <div className="flex sm:flex-row flex-col gap-2 justify-center items-center">
+          <div className="flex flex-row justify-center items-center gap-2">
+            <div className="sm:text-sm text-xs font-normal">en</div>
+            <Switch
+              className="data-[state=checked]:bg-neutral-500 data-[state=unchecked]:bg-neutral-500"
+              checked={i18n.language == "zh"}
+              onCheckedChange={() => {
+                changeLanguage();
+              }}
+            />
+            <div className="sm:text-sm text-xs font-normal">中</div>
+            {/* <Button onClick={() => changeLanguage()}>{t('change_language')}</Button> */}
+          </div>
+          {userData && (
+            <UserNav
+              firstname={JSON.parse(userData).user.firstname}
+              photo={JSON.parse(userData).user.image}
+              role={JSON.parse(userData).user.role}
+            />
+          )}
         </div>
-        {userData && (
-          <UserNav
-            firstname={JSON.parse(userData).user.firstname}
-            photo={JSON.parse(userData).user.image}
-            role={JSON.parse(userData).user.role}
-          />
-        )}
       </div>
     </nav>
   );
