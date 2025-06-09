@@ -45,6 +45,8 @@ Users can enter in a phone number to sign up/sign in, which will allow them to a
     - [x] Public share link
     - [x] Change to support OwnCloud rather than PostgresDB for images
 - [x] Create a QR code for the image
-
+- [x] fix twilio verification error
+- [x] default US country code for phone number input (show flag)
+- [ ] expand admin dashbaord to allow admins to manually create a QR code with print function with picture  (no phone number, email optional)
 ## Future Features
 - [ ] Expand to use the full database and allow general members to also use the app to sign in
