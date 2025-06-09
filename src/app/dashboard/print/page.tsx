@@ -76,7 +76,6 @@ export default function Print() {
 
   useEffect(() => {
     const getImageStatus = async () => {
-      console.log(session?.user);
       if (session?.user.id) {
         const res = await checkImage(session.user.id);
         if (res == false) {
@@ -85,7 +84,7 @@ export default function Print() {
       }
     };
     getImageStatus();
-  }, [session, session?.user]);
+  }, []);
 
   return (
     <div>
