@@ -10,8 +10,8 @@ import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { use, useEffect, useState } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 
@@ -30,13 +30,14 @@ export default function SignUpPage() {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
-
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
 
   const { t, i18n } = useTranslation();
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission
+    setSubmitting(true);
     const formData = new FormData(e.currentTarget);
     if (otpSent) {
       await handleSignUp();
@@ -67,6 +68,7 @@ export default function SignUpPage() {
       setFirstName(formData.get("firstname") as string);
       setLastName(formData.get("lastname") as string);
     }
+    setSubmitting(false);
   };
 
   const handleSignUp = async () => {
@@ -151,7 +153,9 @@ export default function SignUpPage() {
                     value="+1"
                   />
                 </div>
-                <Button type="submit">{t("sign_up")}</Button>
+                <Button type="submit" disabled={submitting}>
+                  {t("sign_up")}
+                </Button>
               </div>
             )}
 
@@ -179,7 +183,9 @@ export default function SignUpPage() {
                     </InputOTPGroup>
                   </InputOTP>
                 </div>
-                <Button type="submit">Verify</Button>
+                <Button type="submit" disabled={submitting}>
+                  Verify
+                </Button>
               </div>
             )}
           </form>
