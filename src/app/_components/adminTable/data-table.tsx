@@ -56,12 +56,12 @@ export function DataTable<TData, TValue>({
       created_at: false,
     });
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const [imageDialogOpen, setImageDialogOpen] = React.useState(false);
-  const [image, setImage] = React.useState<string>('');
+  const [image, setImage] = React.useState<string>("");
 
   const table = useReactTable({
     data,
@@ -85,7 +85,7 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  const {i18n, t} = useTranslation();
+  const { i18n, t } = useTranslation();
 
   return (
     <div className="space-y-4">
@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -126,12 +126,12 @@ export function DataTable<TData, TValue>({
                             setImageDialogOpen(true);
                           }}
                         >
-                          {t('show_image')}
+                          {t("show_image")}
                         </Button>
                       ) : (
                         flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )
                       )}
                     </TableCell>
@@ -156,10 +156,15 @@ export function DataTable<TData, TValue>({
         <DialogContent>
           <DialogHeader>
             <DialogDescription className="flex items-center justify-center ">
-                <Image src={image as string} width={300} height={300} alt="User Image" />
+              <Image
+                src={image ? (image as string) : ""}
+                width={300}
+                height={300}
+                alt="User Image"
+              />
             </DialogDescription>
           </DialogHeader>
-            <Button onClick={() => setImageDialogOpen(false)}>Close</Button>
+          <Button onClick={() => setImageDialogOpen(false)}>Close</Button>
         </DialogContent>
       </Dialog>
     </div>

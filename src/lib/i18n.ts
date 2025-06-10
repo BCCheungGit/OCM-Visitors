@@ -24,6 +24,8 @@ const resources = {
       first_name: "First Name",
       last_name: "Last Name",
       already_have: "Already have an account?",
+      manual_check_in: "Manual Check-In",
+      view_users: "View Visitors",
     },
   },
   zh: {
@@ -48,6 +50,8 @@ const resources = {
       first_name: "名字",
       last_name: "姓氏",
       already_have: "已經有帳戶了嗎?",
+      manual_check_in: "手動登記",
+      view_users: "查看訪客",
     },
   },
 };

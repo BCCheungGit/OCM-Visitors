@@ -4,31 +4,18 @@ import { fetchAllVisitors, isAdmin } from "@/server/actions";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { DataTable } from "../_components/adminTable/data-table";
-import { Columns, Columnszh } from "../_components/adminTable/columns";
 import { TopNav } from "../_components/topnav";
 import { useTranslation } from "react-i18next";
-
-type Columns = {
-  id: string;
-  firstname: string;
-  lastname: string;
-  phonenumber: string;
-  created_at: string;
-  last_signed_in: string;
-  events: string;
-  active: boolean;
-  role: string;
-  image: string;
-};
+import type { ColumnType } from "@/types/admintypes";
+import { ViewType } from "@/types/admintypes";
+import AdminData from "@/app/_components/AdminData";
+import AdminConsole from "@/app/_components/AdminConsole";
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [userList, setUserList] = useState<any | null>(null);
-  const [userColumn, setUserColumn] = useState<Columns[]>([]);
 
-  const { i18n, t } = useTranslation();
+  const [view, setView] = useState<ViewType>(ViewType.DATA_TABLE);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -36,19 +23,6 @@ export default function AdminPage() {
         const admin = await isAdmin(session.user.id);
         if (!admin) {
           router.push("/");
-        } else {
-          const visitors = await fetchAllVisitors();
-          setUserList(JSON.parse(visitors));
-          const parsedUsers = await Promise.all(
-            JSON.parse(visitors).map(async (user: any) => {
-              return {
-                ...user,
-                created_at: new Date(user.created_at).toLocaleString(),
-                last_signed_in: new Date(user.last_signed_in).toLocaleString(),
-              };
-            }),
-          );
-          setUserColumn(parsedUsers);
         }
       }
     };
@@ -58,23 +32,11 @@ export default function AdminPage() {
   return (
     <div>
       <TopNav />
-      {!userList && <p>Loading...</p>}
-      {userList && (
-        <div className="h-full flex-1 flex-col space-y-8 p-8 flex sm:ml-5 sm:mr-5 ml-0 mr-0">
-          <div className="flex items-center justify-between space-y-2">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">
-                {t("welcome_back")}
-              </h2>
-              <p className="text-muted-foreground">{t("heres_a_list")}</p>
-            </div>
-          </div>
-          {i18n.language == "en" ? (
-            <DataTable data={userColumn} columns={Columns} />
-          ) : (
-            <DataTable data={userColumn} columns={Columnszh} />
-          )}
-        </div>
+
+      {view === ViewType.DATA_TABLE ? (
+        <AdminData view={view} setView={setView} />
+      ) : (
+        <AdminConsole view={view} setView={setView} />
       )}
     </div>
   );
