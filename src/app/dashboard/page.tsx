@@ -13,10 +13,10 @@ import { useToast } from "@/components/ui/use-toast";
 
 function CameraComponent({
   userData,
-  onImageUpload,
+  setImageStatus
 }: {
   userData: any;
-  onImageUpload: () => void;
+  setImageStatus: (status: boolean) => void;
 }) {
   const baseUrl =
     "https://store.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&";
@@ -97,13 +97,11 @@ function CameraComponent({
         "visitorImages",
         userData.user.id + ".png",
       );
-
       await updateImage(
         userData.user.id,
         `${baseUrl}file=${userData.user.id}.png&t=${token}&scalingup=0`,
       );
-
-      onImageUpload();
+      setImageStatus(true);
     } finally {
       setLoading(false);
     }
@@ -196,7 +194,6 @@ export default function Dashboard() {
       if (session?.user?.id) {
         const result = await checkImage(session.user.id);
         setImageStatus(result);
-        //console.log("has image: ", imageStatus);
         if (result) {
           console.log("has image: ", imageStatus);
 
@@ -205,7 +202,7 @@ export default function Dashboard() {
       }
     };
     getImageStatus();
-  }, [session]);
+  }, [session, imageStatus]);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -225,9 +222,7 @@ export default function Dashboard() {
     };
     getUserData();
   }, [session, pathname]);
-  const handleImageUpload = () => {
-    setImageStatus(true);
-  };
+
 
   if (status === "loading") {
     return (
@@ -247,7 +242,7 @@ export default function Dashboard() {
         {userData && (
           <CameraComponent
             userData={JSON.parse(userData)}
-            onImageUpload={handleImageUpload}
+            setImageStatus={setImageStatus}
           />
         )}
       </div>

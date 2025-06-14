@@ -81,7 +81,7 @@ export default function Print() {
       if (session?.user.id) {
         const res = await checkImage(session.user.id);
         if (res == false) {
-          router.replace("/dashboard");
+          router.push("/dashboard");
           return;
         }
         setHasCheckedImage(true);

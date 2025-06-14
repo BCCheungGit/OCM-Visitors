@@ -125,7 +125,7 @@ export async function checkImage(uuid: string) {
   if (!user) {
     return false;
   }
-  if (user.image && typeof user.image == "string") {
+  if (user.image) {
     return true;
   }
   return false;
