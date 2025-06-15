@@ -26,6 +26,8 @@ const resources = {
       already_have: "Already have an account?",
       manual_check_in: "Manual Check-In",
       view_users: "View Visitors",
+      open_camera: "Open Camera",
+      close_camera: "Close Camera",
     },
   },
   zh: {
@@ -52,6 +54,8 @@ const resources = {
       already_have: "已經有帳戶了嗎?",
       manual_check_in: "手動登記",
       view_users: "查看訪客",
+      open_camera: "開啟相機",
+      close_camera: "關閉相機",
     },
   },
 };

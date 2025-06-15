@@ -10,6 +10,7 @@ import Webcam from "react-webcam";
 import { usePathname } from "next/navigation";
 import { TopNav } from "../_components/topnav";
 import { useToast } from "@/components/ui/use-toast";
+import {useTranslation} from "react-i18next";
 
 function CameraComponent({
   userData,
@@ -36,6 +37,9 @@ function CameraComponent({
 
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  const { i18n, t } = useTranslation();
+
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot({
@@ -125,7 +129,7 @@ function CameraComponent({
                 }
               }}
             >
-              {isCaptureEnable ? "Close Camera" : "Open Camera"}{" "}
+              {isCaptureEnable ? t("close_camera") : t("open_camera")}{" "}
             </Button>
             {isCaptureEnable && <Button onClick={capture}>Capture</Button>}
           </div>
