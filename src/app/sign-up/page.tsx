@@ -117,7 +117,7 @@ export default function SignUpPage() {
             {!otpSent && (
               <div className="flex flex-col gap-6">
                 <div className="flex flex-row gap-4">
-                  <div className="flex flex-col ">
+                  <div className="flex flex-col gap-2">
                     <label
                       htmlFor="firstname"
                       className="sm:text-sm text-xs"
@@ -127,7 +127,7 @@ export default function SignUpPage() {
                     </label>
                     <Input required type="text" name="firstname" />
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-2">
                     <label
                       htmlFor="lastname"
                       className="sm:text-sm text-xs"
