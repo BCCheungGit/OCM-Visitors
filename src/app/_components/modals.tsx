@@ -1,77 +1,66 @@
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { deleteUser } from "@/server/actions";
-import { revalidatePath } from "next/cache";
-
-
-
-interface ImageModalProps {
-    image: string;
+import { Dispatch, SetStateAction, useCallback, useRef, useState } from "react";
+import Webcam from "react-webcam";
+interface TakePhotoModalProps {
+  isOpen: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  onTakePhoto: () => void;
 }
 
-export const ImageModal: React.FC<ImageModalProps> = ({image}) => {
+export function TakePhotoModal({
+  isOpen,
+  setOpen,
+  onTakePhoto,
+}: TakePhotoModalProps) {
+  const isMobile = window.innerWidth < 768;
+  const width = isMobile ? 400 : 300;
+  const height = isMobile ? 300 : 400;
+  const videoConstraints = {
+    width: width,
+    height: height,
+    facingMode: "user",
+  };
+  const webcamRef = useRef<Webcam>(null);
+  const [url, setUrl] = useState<string>("");
+  const capture = useCallback(() => {
+    const imageSrc = webcamRef.current?.getScreenshot({
+      width: isMobile ? height : width,
+      height: isMobile ? width : height,
+    });
+    if (imageSrc) {
+      setUrl(imageSrc);
+    }
+  }, [webcamRef, setUrl]);
 
-    return (
-        <AlertDialog>
-            <AlertDialogTrigger>
-                <img className="rounded-md w-[80px] h-[106.4px]" src={image} />
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-                <AlertDialogHeader className="flex flex-row items-center justify-center">
-                    <AlertDialogTitle>Image</AlertDialogTitle>
-                </AlertDialogHeader>
-                <AlertDialogDescription className="flex flex-row items-center justify-center">
-                    <img className="rounded-md w-[300px] h-[400px]" src={image} />
-                </AlertDialogDescription>
-                <AlertDialogCancel>Close</AlertDialogCancel>
-            </AlertDialogContent>
-        </AlertDialog>
-    )
+  return (
+    <AlertDialog open={isOpen} onOpenChange={setOpen}>
+      <AlertDialogContent>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <AlertDialogTitle>Take a Photo</AlertDialogTitle>
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/png"
+            videoConstraints={videoConstraints}
+            mirrored={true}
+          />
+        </div>
+        <AlertDialogFooter className="flex justify-between w-full items-center">
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onTakePhoto}>Capture</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }
-
-
-interface DeleteModalProps {
-    firstName: string | undefined;
-    lastName: string | undefined;
-    userId: string;
-}
-
-
-export const DeleteModal: React.FC<DeleteModalProps> = ({firstName, lastName, userId}) => {
-    return (
-        <AlertDialog>
-            <AlertDialogTrigger asChild>
-                <Button variant="destructive">Delete</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                <AlertDialogTitle>
-                    Are you sure you want to delete this user: ({firstName} {lastName})
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                    They will be permanently removed from the database. This action cannot be undone.
-                </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel>
-                        Cancel
-                    </AlertDialogCancel>
-                    <form action={async () => {
-                            "use server";
-                            await deleteUser(userId);
-
-                        }}>
-                    <AlertDialogAction type="submit">
-                        Delete
-{/*     
-                        <button type="submit">Delete</button> */}
-
-                    </AlertDialogAction>
-                    </form>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
-    )
-}
-
-

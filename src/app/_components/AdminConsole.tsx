@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { TakePhotoModal } from "./modals";
+
 interface AdminConsoleProps {
   view: ViewType;
   setView: (view: ViewType) => void;
@@ -12,6 +14,10 @@ interface AdminConsoleProps {
 export default function AdminConsole({ view, setView }: AdminConsoleProps) {
   const { t, i18n } = useTranslation();
   const [submitting, setSubmitting] = useState<boolean>(false);
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const onTakePhoto = async () => {};
 
   const { toast } = useToast();
 
@@ -23,6 +29,11 @@ export default function AdminConsole({ view, setView }: AdminConsoleProps) {
 
   return (
     <div className="min-w-screen flex flex-row justify-center items-center p-4 h-full">
+      <TakePhotoModal
+        isOpen={modalOpen}
+        setOpen={setModalOpen}
+        onTakePhoto={onTakePhoto}
+      />
       <div className="sm:w-fit w-[400px] flex  flex-col items-center border-2 p-8 gap-6 mt-10 rounded-lg shadow-xl">
         <h1 className="sm:text-xl text-lg font-semibold">
           {t("manual_check_in")}
@@ -51,7 +62,9 @@ export default function AdminConsole({ view, setView }: AdminConsoleProps) {
                 <Input required type="text" name="lastname" />
               </div>
             </div>
-            <Button>Take Picture</Button>
+            <Button type="button" onClick={() => setModalOpen(true)}>
+              Take Picture
+            </Button>
 
             <Button type="submit" disabled={submitting}>
               {t("sign_up")}
