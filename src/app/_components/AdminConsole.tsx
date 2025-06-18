@@ -62,8 +62,20 @@ export default function AdminConsole({ view, setView }: AdminConsoleProps) {
                 <Input required type="text" name="lastname" />
               </div>
             </div>
+            <div>
+              <label htmlFor="email" className="sm:text-sm text-xs">
+                {t("email_optional")}
+              </label>
+              <Input required={false} type="text" name="email" />
+            </div>
+            <div>
+              <label htmlFor="phone" className="sm:text-sm text-xs">
+                {t("phone_optional")}
+              </label>
+              <Input required={false} type="text" name="phone" />
+            </div>
             <Button type="button" onClick={() => setModalOpen(true)}>
-              Take Picture
+              {t("open_camera")}
             </Button>
 
             <Button type="submit" disabled={submitting}>

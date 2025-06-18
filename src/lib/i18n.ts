@@ -28,6 +28,8 @@ const resources = {
       view_users: "View Visitors",
       open_camera: "Open Camera",
       close_camera: "Close Camera",
+      email_optional: "Email (Optional)",
+      phone_optional: "Phone Number (Optional)",
     },
   },
   zh: {
@@ -56,6 +58,8 @@ const resources = {
       view_users: "查看訪客",
       open_camera: "開啟相機",
       close_camera: "關閉相機",
+      email_optional: "電子郵件 (可選)",
+      phone_optional: "電話號碼 (可選)",
     },
   },
 };
