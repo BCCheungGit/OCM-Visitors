@@ -1,6 +1,9 @@
 import { ViewType } from "@/types/admintypes";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 interface AdminConsoleProps {
   view: ViewType;
   setView: (view: ViewType) => void;
@@ -8,13 +11,54 @@ interface AdminConsoleProps {
 
 export default function AdminConsole({ view, setView }: AdminConsoleProps) {
   const { t, i18n } = useTranslation();
+  const [submitting, setSubmitting] = useState<boolean>(false);
+
+  const { toast } = useToast();
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+    const formData = new FormData(e.currentTarget);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-2xl font-bold mb-4">Admin Console</h1>
-      <p className="text-gray-600">
-        This is the admin console. Please select an option from the navigation.
-      </p>
-      <div className="flex items-center space-x-2">
+    <div className="min-w-screen flex flex-row justify-center items-center p-4 h-full">
+      <div className="sm:w-fit w-[400px] flex  flex-col items-center border-2 p-8 gap-6 mt-10 rounded-lg shadow-xl">
+        <h1 className="sm:text-xl text-lg font-semibold">
+          {t("manual_check_in")}
+        </h1>
+        <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-row gap-4">
+              <div className="flex flex-col gap-2 ">
+                <label
+                  htmlFor="firstname"
+                  className="sm:text-sm text-xs"
+                  aria-required
+                >
+                  {t("first_name")}
+                </label>
+                <Input required type="text" name="firstname" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="lastname"
+                  className="sm:text-sm text-xs"
+                  aria-required
+                >
+                  {t("last_name")}
+                </label>
+                <Input required type="text" name="lastname" />
+              </div>
+            </div>
+            <Button>Take Picture</Button>
+
+            <Button type="submit" disabled={submitting}>
+              {t("sign_up")}
+            </Button>
+          </div>
+        </form>
+
         <Button
           onClick={() => setView(ViewType.DATA_TABLE)}
           className="btn btn-primary"

@@ -197,3 +197,10 @@ export async function fetchAllVisitors() {
   await prisma.$disconnect();
   return JSON.stringify(users);
 }
+
+export async function manualCheckIn(formData: any) {
+  const firstName = formData.firstname as string;
+  const lastName = formData.lastname as string;
+
+  const prisma = new PrismaClient();
+}
