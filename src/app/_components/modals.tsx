@@ -11,18 +11,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction, useCallback, useRef, useState } from "react";
+import { Loader } from "lucide-react";
+import { useTransition } from "react";
 import Webcam from "react-webcam";
+import { Input } from "postcss";
 interface TakePhotoModalProps {
   isOpen: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  onTakePhoto: () => void;
 }
 
-export function TakePhotoModal({
-  isOpen,
-  setOpen,
-  onTakePhoto,
-}: TakePhotoModalProps) {
+export function TakePhotoModal({ isOpen, setOpen }: TakePhotoModalProps) {
+  const baseUrl =
+    "https://store.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&";
+  const [isPending, startTransition] = useTransition();
   const isMobile = window.innerWidth < 768;
   const width = isMobile ? 400 : 300;
   const height = isMobile ? 300 : 400;
@@ -33,6 +34,7 @@ export function TakePhotoModal({
   };
   const webcamRef = useRef<Webcam>(null);
   const [url, setUrl] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot({
       width: isMobile ? height : width,
@@ -48,17 +50,56 @@ export function TakePhotoModal({
       <AlertDialogContent>
         <div className="flex flex-col items-center justify-center gap-4">
           <AlertDialogTitle>Take a Photo</AlertDialogTitle>
-          <Webcam
-            audio={false}
-            ref={webcamRef}
-            screenshotFormat="image/png"
-            videoConstraints={videoConstraints}
-            mirrored={true}
-          />
+
+          {url == "" ? (
+            <>
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/png"
+                videoConstraints={videoConstraints}
+                mirrored={true}
+              />
+            </>
+          ) : (
+            <>
+              <div className="flex flex-row justify-center w-full gap-4">
+                <Button
+                  onClick={() => {
+                    setUrl("");
+                  }}
+                  className="w-fit"
+                >
+                  Delete
+                </Button>
+                <form
+                  action={(formData) => {
+                    startTransition(() => {});
+                  }}
+                >
+                  <input name="image" defaultValue={url} hidden />
+                  <Button
+                    className="w-fit"
+                    type="submit"
+                    disabled={loading || isPending}
+                  >
+                    {loading || isPending ? (
+                      <span className="flex items-center gap-2">
+                        <Loader className="animate-spin w-4 h-4" /> Uploading...
+                      </span>
+                    ) : (
+                      "Upload Image"
+                    )}
+                  </Button>
+                </form>
+              </div>
+              <img src={typeof url == "string" ? url : ""} alt="captured" />
+            </>
+          )}
         </div>
         <AlertDialogFooter className="flex justify-between w-full items-center">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onTakePhoto}>Capture</AlertDialogAction>
+          <Button onClick={capture}>Capture</Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

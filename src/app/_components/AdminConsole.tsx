@@ -16,9 +16,6 @@ export default function AdminConsole({ view, setView }: AdminConsoleProps) {
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-
-  const onTakePhoto = async () => {};
-
   const { toast } = useToast();
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,11 +26,7 @@ export default function AdminConsole({ view, setView }: AdminConsoleProps) {
 
   return (
     <div className="min-w-screen flex flex-row justify-center items-center p-4 h-full">
-      <TakePhotoModal
-        isOpen={modalOpen}
-        setOpen={setModalOpen}
-        onTakePhoto={onTakePhoto}
-      />
+      <TakePhotoModal isOpen={modalOpen} setOpen={setModalOpen} />
       <div className="sm:w-fit w-[400px] flex  flex-col items-center border-2 p-8 gap-6 mt-10 rounded-lg shadow-xl">
         <h1 className="sm:text-xl text-lg font-semibold">
           {t("manual_check_in")}

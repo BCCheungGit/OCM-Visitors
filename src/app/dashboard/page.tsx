@@ -10,11 +10,11 @@ import Webcam from "react-webcam";
 import { usePathname } from "next/navigation";
 import { TopNav } from "../_components/topnav";
 import { useToast } from "@/components/ui/use-toast";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 function CameraComponent({
   userData,
-  setImageStatus
+  setImageStatus,
 }: {
   userData: any;
   setImageStatus: (status: boolean) => void;
@@ -39,7 +39,6 @@ function CameraComponent({
   const [isPending, startTransition] = useTransition();
 
   const { i18n, t } = useTranslation();
-
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot({
@@ -226,7 +225,6 @@ export default function Dashboard() {
     };
     getUserData();
   }, [session, pathname]);
-
 
   if (status === "loading") {
     return (
