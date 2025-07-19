@@ -48,5 +48,12 @@ Users can enter in a phone number to sign up/sign in, which will allow them to a
 - [x] fix twilio verification error
 - [x] default US country code for phone number input (show flag)
 - [ ] expand admin dashbaord to allow admins to manually create a QR code with print function with picture  (no phone number, email optional)
+    - [ ] finish modal for taking a photo
+        - pass in url of image as a useState from parent component -> set url when user takes a photo -> display image in parent component form and handle upload (backend call) in the parent component
+    - [x] backend endpoint to create a new user in database with phone number and email optional- generate userId for them as well
+- [ ] Improve code organization
+    - [ ] base url as env variable
+    - [ ] move modals to the modals.tsx file
+    - [ ] Documentation?
 ## Future Features
 - [ ] Expand to use the full database and allow general members to also use the app to sign in
