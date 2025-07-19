@@ -201,6 +201,45 @@ export async function fetchAllVisitors() {
 export async function manualCheckIn(formData: any) {
   const firstName = formData.firstname as string;
   const lastName = formData.lastname as string;
+  const photo = formData.url as string;
 
   const prisma = new PrismaClient();
+  try {
+    let newid = Math.floor(100000000 + Math.random() * 900000000).toString();
+    let existingUser = await prisma.visitors_master.findFirst({
+      where: {
+        id: newid,
+      },
+    });
+
+    while (existingUser) {
+      newid = Math.floor(100000000 + Math.random() * 900000000).toString();
+      existingUser = await prisma.visitors_master.findFirst({
+        where: {
+          id: newid,
+        },
+      });
+    }
+
+    await prisma.visitors_master.create({
+      data: {
+        id: newid,
+        firstname: firstName,
+        lastname: lastName,
+        phonenumber: "",
+        created_at: new Date().toISOString(),
+        last_signed_in: new Date().toISOString(),
+        events: "",
+        active: true,
+        role: "visitor",
+        image: photo,
+      },
+    });
+    return {
+      message: `Successfully registered visitor with id: ${newid}`,
+    };
+  } catch (error) {
+    console.error(error);
+    return { error: "There was an error checking in visitor" };
+  }
 }

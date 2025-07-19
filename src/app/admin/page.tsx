@@ -1,12 +1,10 @@
 "use client";
 
-import { fetchAllVisitors, isAdmin } from "@/server/actions";
+import { isAdmin } from "@/server/actions";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TopNav } from "../_components/topnav";
-import { useTranslation } from "react-i18next";
-import type { ColumnType } from "@/types/admintypes";
 import { ViewType } from "@/types/admintypes";
 import AdminData from "@/app/_components/AdminData";
 import AdminConsole from "@/app/_components/AdminConsole";
@@ -32,7 +30,6 @@ export default function AdminPage() {
   return (
     <div>
       <TopNav />
-
       {view === ViewType.DATA_TABLE ? (
         <AdminData view={view} setView={setView} />
       ) : (

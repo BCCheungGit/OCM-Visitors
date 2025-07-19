@@ -9,7 +9,6 @@ import { useTransition, useCallback, useEffect, useState, useRef } from "react";
 import Webcam from "react-webcam";
 import { usePathname } from "next/navigation";
 import { TopNav } from "../_components/topnav";
-import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 
 function CameraComponent({
@@ -21,7 +20,6 @@ function CameraComponent({
 }) {
   const baseUrl =
     "https://store.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&";
-  const { toast } = useToast();
 
   const isMobile = window.innerWidth < 768;
   const width = isMobile ? 400 : 300;

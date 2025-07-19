@@ -14,13 +14,19 @@ import { Dispatch, SetStateAction, useCallback, useRef, useState } from "react";
 import { Loader } from "lucide-react";
 import { useTransition } from "react";
 import Webcam from "react-webcam";
-import { Input } from "postcss";
 interface TakePhotoModalProps {
   isOpen: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  url: string;
+  setUrl: Dispatch<SetStateAction<string>>;
 }
 
-export function TakePhotoModal({ isOpen, setOpen }: TakePhotoModalProps) {
+export function TakePhotoModal({
+  isOpen,
+  setOpen,
+  url,
+  setUrl,
+}: TakePhotoModalProps) {
   const baseUrl =
     "https://store.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&";
   const [isPending, startTransition] = useTransition();
@@ -33,7 +39,6 @@ export function TakePhotoModal({ isOpen, setOpen }: TakePhotoModalProps) {
     facingMode: "user",
   };
   const webcamRef = useRef<Webcam>(null);
-  const [url, setUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot({
@@ -44,6 +49,14 @@ export function TakePhotoModal({ isOpen, setOpen }: TakePhotoModalProps) {
       setUrl(imageSrc);
     }
   }, [webcamRef, setUrl]);
+
+  const handleUpload = async (formData: FormData) => {
+    setLoading(true);
+    try {
+    } catch (error: any) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setOpen}>
@@ -72,26 +85,20 @@ export function TakePhotoModal({ isOpen, setOpen }: TakePhotoModalProps) {
                 >
                   Delete
                 </Button>
-                <form
-                  action={(formData) => {
-                    startTransition(() => {});
-                  }}
+                <input name="image" defaultValue={url} hidden />
+                <Button
+                  className="w-fit"
+                  type="submit"
+                  disabled={loading || isPending}
                 >
-                  <input name="image" defaultValue={url} hidden />
-                  <Button
-                    className="w-fit"
-                    type="submit"
-                    disabled={loading || isPending}
-                  >
-                    {loading || isPending ? (
-                      <span className="flex items-center gap-2">
-                        <Loader className="animate-spin w-4 h-4" /> Uploading...
-                      </span>
-                    ) : (
-                      "Upload Image"
-                    )}
-                  </Button>
-                </form>
+                  {loading || isPending ? (
+                    <span className="flex items-center gap-2">
+                      <Loader className="animate-spin w-4 h-4" /> Uploading...
+                    </span>
+                  ) : (
+                    "Upload Image"
+                  )}
+                </Button>
               </div>
               <img src={typeof url == "string" ? url : ""} alt="captured" />
             </>
