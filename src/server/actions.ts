@@ -198,10 +198,10 @@ export async function fetchAllVisitors() {
   return JSON.stringify(users);
 }
 
-export async function manualCheckIn(formData: any) {
-  const firstName = formData.firstname as string;
-  const lastName = formData.lastname as string;
-  const photo = formData.url as string;
+export async function manualCheckIn(formData: FormData) {
+  const firstName = formData.get("firstname") as string;
+  const lastName = formData.get("lastname") as string;
+  const photo = formData.get("image") as string;
 
   const prisma = new PrismaClient();
   try {
@@ -226,7 +226,10 @@ export async function manualCheckIn(formData: any) {
         id: newid,
         firstname: firstName,
         lastname: lastName,
-        phonenumber: "",
+        phonenumber:
+          (formData.get("phonenumber") as string) ||
+          (formData.get("email") as string) ||
+          "",
         created_at: new Date().toISOString(),
         last_signed_in: new Date().toISOString(),
         events: "",
@@ -240,6 +243,6 @@ export async function manualCheckIn(formData: any) {
     };
   } catch (error) {
     console.error(error);
-    return { error: "There was an error checking in visitor" };
+    return { error: "There was an error checking in Visitor" };
   }
 }
