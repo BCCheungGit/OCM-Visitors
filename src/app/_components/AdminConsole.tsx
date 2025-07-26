@@ -79,6 +79,7 @@ export default function AdminConsole({
         });
         return;
       }
+
       let userId = "";
       try {
         const res = await manualCheckIn(formData);
@@ -131,7 +132,6 @@ export default function AdminConsole({
       });
     } finally {
       setSubmitting(false);
-      setView(ViewType.MANUAL_ID_CARD);
     }
   };
 
