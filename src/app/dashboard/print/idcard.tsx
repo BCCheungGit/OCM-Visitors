@@ -5,7 +5,6 @@ import { QRCode } from "react-qrcode-logo";
 interface IDCardProps {
   id: string | undefined;
   name: string | undefined;
-  phone: string | undefined;
   photo: string | undefined;
   date: string | undefined;
   role: string | undefined;
@@ -14,7 +13,6 @@ interface IDCardProps {
 export const IDCard: React.FC<IDCardProps> = ({
   id,
   name,
-  phone,
   photo,
   date,
   role,

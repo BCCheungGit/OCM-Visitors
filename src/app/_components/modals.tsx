@@ -6,8 +6,16 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import Image from "next/image";
 import { Dispatch, SetStateAction, useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
+import { IDCard } from "../dashboard/print/idcard";
 interface TakePhotoModalProps {
   isOpen: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -87,5 +95,55 @@ export function TakePhotoModal({
         )}
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+interface ShowImageModalProps {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  image: string;
+}
+
+export function ShowImageModal({
+  isOpen,
+  setIsOpen,
+  image,
+}: ShowImageModalProps) {
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogDescription className="flex items-center justify-center ">
+            <Image
+              src={image || ""}
+              width={300}
+              height={300}
+              alt="User Image"
+            />
+          </DialogDescription>
+        </DialogHeader>
+        <Button onClick={() => setIsOpen(false)}>Close</Button>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+interface ShowIDCardModalProps {
+  id: string;
+  name: string;
+  photo: string;
+  date: string;
+  role: string;
+}
+export function ShowIDCardModal({
+  id,
+  name,
+  photo,
+  date,
+  role,
+}: ShowIDCardModalProps) {
+  return (
+    <>
+      <IDCard id={id} name={name} photo={photo} role={role} date={date} />
+    </>
   );
 }

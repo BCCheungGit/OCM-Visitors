@@ -38,6 +38,7 @@ import { DataTableToolbar } from "./data-table-toolbar";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { ShowImageModal } from "../modals";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -152,21 +153,11 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <DataTablePagination table={table} />
-      <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogDescription className="flex items-center justify-center ">
-              <Image
-                src={image ? (image as string) : ""}
-                width={300}
-                height={300}
-                alt="User Image"
-              />
-            </DialogDescription>
-          </DialogHeader>
-          <Button onClick={() => setImageDialogOpen(false)}>Close</Button>
-        </DialogContent>
-      </Dialog>
+      <ShowImageModal
+        isOpen={imageDialogOpen}
+        setIsOpen={setImageDialogOpen}
+        image={image}
+      />
     </div>
   );
 }

@@ -37,7 +37,6 @@ const CardComponent: React.FC<CardProps> = ({
         date={convertToESTFormat(userData?.user.last_signed_in)}
         photo={userData?.user.image}
         name={`${userData?.user.firstname} ${userData?.user.lastname}`}
-        phone={userData?.user.phonenumber}
         role={userData?.user.role}
       />
     </div>

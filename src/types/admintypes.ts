@@ -14,4 +14,13 @@ export type ColumnType = {
 export enum ViewType {
   DATA_TABLE = "data_table",
   MANUAL_CHECK_IN = "manual_check_in",
+  MANUAL_ID_CARD = "manual_id_card",
 }
+
+export type IdCardProps = {
+  id: string | undefined;
+  name: string | undefined;
+  photo: string | undefined;
+  date: string | undefined;
+  role: string | undefined;
+};

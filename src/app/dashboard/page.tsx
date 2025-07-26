@@ -64,6 +64,7 @@ function CameraComponent({
     });
     if (response.ok) {
       const data = await response.json();
+      return data.message;
     } else {
       const errorData = await response.json();
       console.error("Error uploading image:", errorData.error);

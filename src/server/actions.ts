@@ -240,6 +240,7 @@ export async function manualCheckIn(formData: FormData) {
     });
     return {
       message: `Successfully registered visitor with id: ${newid}`,
+      newId: newid,
     };
   } catch (error) {
     console.error(error);

@@ -1,24 +1,66 @@
-import { ViewType } from "@/types/admintypes";
+import { IdCardProps, ViewType } from "@/types/admintypes";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { TakePhotoModal } from "./modals";
-import { manualCheckIn } from "@/server/actions";
+import { manualCheckIn, updateImage } from "@/server/actions";
 import Image from "next/image";
 
 interface AdminConsoleProps {
-  view: ViewType;
   setView: (view: ViewType) => void;
+  setCardValues: Dispatch<SetStateAction<IdCardProps>>;
 }
 
-export default function AdminConsole({ view, setView }: AdminConsoleProps) {
+export default function AdminConsole({
+  setView,
+  setCardValues,
+}: AdminConsoleProps) {
   const { t, i18n } = useTranslation();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [url, setUrl] = useState<string>("");
   const { toast } = useToast();
+  const baseUrl =
+    "https://store.cloudority.com/index.php/apps/files_sharing/ajax/publicpreview.php?x=1920&y=490&a=true&";
+
+  const uploadImage = async (
+    folderName: string,
+    fileName: string,
+    base64Image: string,
+  ) => {
+    const response = await fetch("/api/owncloud/putimage", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ folderName, fileName, base64Image }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.message;
+    } else {
+      const errorData = await response.json();
+      console.error("Error uploading image:", errorData.error);
+    }
+  };
+
+  const getImageToken = async (folderName: string, fileName: string) => {
+    const response = await fetch("/api/owncloud/gettoken", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ folderName, fileName }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.token;
+    } else {
+      console.error("Error getting token:", response.statusText);
+    }
+  };
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,15 +79,41 @@ export default function AdminConsole({ view, setView }: AdminConsoleProps) {
         });
         return;
       }
+      let userId = "";
+      try {
+        const res = await manualCheckIn(formData);
+        userId = res.newId || "";
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Check-in failed",
+        });
+      }
 
-      const res = await manualCheckIn(formData);
+      await uploadImage(
+        "visitorImages",
+        userId + ".png",
+        formData.get("image") as string,
+      );
+      const token = await getImageToken("visitorImages", userId + ".png");
+      const finalres = await updateImage(
+        userId,
+        `${baseUrl}file=${userId}.png&t=${token}&scalingup=0`,
+      );
 
-      if (res.message) {
+      if (finalres) {
         toast({
           title: t("success"),
           description: t("check_in_successful"),
         });
-
+        setCardValues({
+          id: userId,
+          name: `${formData.get("firstname")} ${formData.get("lastname")}`,
+          photo: `${baseUrl}file=${userId}.png&t=${token}&scalingup=0`,
+          date: new Date().toLocaleDateString(i18n.language),
+          role: "visitor",
+        });
+        setView(ViewType.MANUAL_ID_CARD);
         setUrl("");
       } else {
         toast({
@@ -63,6 +131,7 @@ export default function AdminConsole({ view, setView }: AdminConsoleProps) {
       });
     } finally {
       setSubmitting(false);
+      setView(ViewType.MANUAL_ID_CARD);
     }
   };
 
@@ -106,13 +175,13 @@ export default function AdminConsole({ view, setView }: AdminConsoleProps) {
               <label htmlFor="email" className="sm:text-sm text-xs">
                 {t("email_optional")}
               </label>
-              <Input type="email" name="email" id="email" />
+              <Input type="email" name="email" id="email" required={false} />
             </div>
             <div>
               <label htmlFor="phone" className="sm:text-sm text-xs">
                 {t("phone_optional")}
               </label>
-              <Input type="tel" name="phone" id="phone" />
+              <Input type="tel" name="phone" id="phone" required={false} />
             </div>
             {url && (
               <div className="flex flex-col gap-2">

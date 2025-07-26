@@ -7,11 +7,10 @@ import { DataTable } from "./adminTable/data-table";
 import { ViewType } from "@/types/admintypes";
 import { Button } from "@/components/ui/button";
 interface AdminDataProps {
-  view: ViewType;
   setView: (view: ViewType) => void;
 }
 
-export default function AdminData({ view, setView }: AdminDataProps) {
+export default function AdminData({ setView }: AdminDataProps) {
   const [userList, setUserList] = useState<any | null>(null);
   const [userColumn, setUserColumn] = useState<ColumnType[]>([]);
   const { i18n, t } = useTranslation();
