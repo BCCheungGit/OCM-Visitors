@@ -118,7 +118,7 @@ export default function AdminConsole({
       } else {
         toast({
           title: t("error"),
-          description: res.error || t("check_in_failed"),
+          description: t("check_in_failed"),
           variant: "destructive",
         });
       }
